@@ -1,0 +1,47 @@
+#tableList {
+  width: 98%;
+  height: 250px;
+  margin: 0 auto;
+}
+
+#content {
+  margin-left: 5px;
+  margin-top: 5px;
+}
+
+.fieldLabel {
+  font-weight: bold;
+}
+
+.specialBtn {
+  height: 20px;
+  width: 140px;
+  padding-top: 0;
+  position:absolute;
+  right: 5px;
+}
+
+#txtTableName {
+  width: 80%;
+}
+
+.tableFilter {
+  margin-top: 5px;
+}
+
+thead {
+  display:none;
+}
+
+.innerTable {
+  width: 94%;
+  margin: 0 auto;
+  border: 1px solid #AAA;
+  height: 200px;
+  overflow-y: auto;
+}
+
+#dbTables tr td {
+  font-size: 11px;
+  height: 10px;
+}

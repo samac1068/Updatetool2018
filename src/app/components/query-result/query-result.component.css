@@ -1,0 +1,23 @@
+
+.divQuery {
+  height: 38vh;
+  width: 100%;
+  overflow-y: auto;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.separator {
+  border: 2px solid black;
+  width: 100%;
+  height: 2px;
+  opacity: .2;
+}
+
+.divResults {
+  height: 40vh;
+  width: 100%;
+  overflow-y: auto;
+  margin-left: 5px;
+  margin-right: 5px;
+}

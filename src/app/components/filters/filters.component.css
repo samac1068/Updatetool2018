@@ -1,0 +1,33 @@
+.selectContent {
+  margin-left: 5px;
+  margin-top: 5px;
+}
+
+.fieldLabel {
+  font-weight: bold;
+}
+
+#dbFilters {
+  height: 130px;
+  font-size:11px;
+  width: 98%;
+  margin: 0 auto;
+}
+
+.filtersGrp {
+  margin-top: 10px;
+}
+
+.offsetRight {
+  position: absolute;
+  right: 10px;
+}
+
+.fieldSelect {
+  margin-top: 5px;
+}
+
+#txtFilterText {
+  width: 97%;
+  font-size: 11px;
+}

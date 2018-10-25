@@ -1,0 +1,21 @@
+<div class="tables">
+  <div id="content">
+    <span class="fieldLabel">Table Names:</span>
+    <button class="standardBtn specialBtn" >Reload Data</button>
+
+    <div class="tableFilter">
+      <label for="txtTableName" class="fieldLabel">Filter:</label>&nbsp;
+      <input id="txtTableName" type="text" />
+      <button class="standardBtn" style="padding: 0 5px;"> X </button>
+
+      <div class="innerTable">
+        <table id="dbTables" class="table table-hover">
+          <tr *ngFor="let table of tableName">
+            <td>{{ table.field}}</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<hr />
