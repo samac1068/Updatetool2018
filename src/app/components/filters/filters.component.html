@@ -5,13 +5,7 @@
     <input type="checkbox" id="chkReturnTop"> Return Top:
     <select id="ddlTopReturn" style="width: 75%">
       <option value="-1"></option>
-      <option value="1">1 Row</option>
-      <option value="10">10 Rows</option>
-      <option value="50">50 Rows</option>
-      <option value="100">100 Rows</option>
-      <option value="1000">1000 Rows</option>
-      <option value="2000">2000 Rows</option>
-      <option value="All">All Rows</option>
+      <option *ngFor="let row of rowOpt" value="{{ row.value }}">{{ row.lbl }}</option>
     </select>
 
     <div class="filtersGrp">
@@ -39,19 +33,7 @@
     <div style="margin-top: 3px;">
       <select id="ddlColumnList" style="width: 75%"></select>
       <select id="ddlConditionList" style="width: 20%" class="offsetRight">
-        <option value="LIKE">LIKE</option>
-        <option value="=">=</option>
-        <option value="<>"><></option>
-        <option value="!=">!=</option>
-        <option value=">">></option>
-        <option value=">=">>=</option>
-        <option value="!>">!></option>
-        <option value="<"><</option>
-        <option value="<="><=</option>
-        <option value="!<">!<</option>
-        <option value="IN">IN</option>
-        <option value="IS NULL">IS NULL</option>
-        <option value="IS NOT NULL">IS NOT NULL</option>
+        <option *ngFor="let condition of conditionalOpt" value=" {{ condition }} ">{{ condition }}</option>
       </select>
     </div>
   </div>

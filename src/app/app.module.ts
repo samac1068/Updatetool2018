@@ -1,3 +1,5 @@
+import { ConfigService } from './services/config.service';
+import { DataService } from './services/data.service';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
@@ -16,6 +18,16 @@ import { TablesComponent } from './components/tables/tables.component';
 import { QueryBtnsComponent } from './components/query-btns/query-btns.component';
 import { FiltersComponent } from './components/filters/filters.component';
 import { DataTablesModule } from 'angular-datatables';
+import { StorageService } from './services/storage.service';
+import { HttpClientModule } from '@angular/common/http';
+import { MatTabsModule } from '@angular/material';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { TableFilterPipe } from './services/tablefilter.pipe';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSortModule } from '@angular/material/sort';
+import { MatDialogModule } from '@angular/material/dialog';
+import { ColumnsDialogComponent } from './dialogs/columns-dialog/columns-dialog.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +41,9 @@ import { DataTablesModule } from 'angular-datatables';
     SelectPnlComponent,
     TablesComponent,
     QueryBtnsComponent,
-    FiltersComponent
+    FiltersComponent,
+    TableFilterPipe,
+    ColumnsDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -37,9 +51,23 @@ import { DataTablesModule } from 'angular-datatables';
     FormsModule,
     ReactiveFormsModule,
     NgbModule,
-    DataTablesModule
+    DataTablesModule,
+    HttpClientModule
+    ,MatTabsModule,
+    BrowserAnimationsModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule,
+    MatDialogModule
   ],
-  providers: [],
-  bootstrap: [AppComponent]
+  providers: [
+    DataService,
+    StorageService,
+    ConfigService
+  ],
+  bootstrap: [AppComponent],
+  entryComponents: [
+    ColumnsDialogComponent
+  ]
 })
 export class AppModule { }

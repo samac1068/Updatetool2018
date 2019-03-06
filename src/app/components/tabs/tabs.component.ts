@@ -1,6 +1,10 @@
-import { Component, OnInit} from '@angular/core';
-import { Tab } from '../../models/Tab';
-import {TabComponent} from '../tab/tab.component';
+import { Component, OnInit, ViewChild} from '@angular/core';
+import { Tab } from '../../models/Tab.model';
+import { TabComponent } from '../tab/tab.component';
+import { StorageService } from '../../services/storage.service';
+import { CommService } from '../../services/comm.service';
+import { FormControl } from '@angular/forms';
+import {MatTabsModule} from '@angular/material/tabs';
 
 @Component({
   selector: 'app-tabs',
@@ -9,43 +13,39 @@ import {TabComponent} from '../tab/tab.component';
 })
 export class TabsComponent implements OnInit {
 
-  // This is just a test
-  temp: any[] = [
-    { tabid: 1, server: 'production', database: 'dampsa', active: false },
-    { tabid: 2, server: 'production', database: 'order_viewer', active: false }
-  ];
+  tabs: any[] = [];
+  selectedTab: number = -1;
 
-  tabs: TabComponent[] = [];
-
-  constructor() { }
+  constructor(private store: StorageService, private comm: CommService) { }
 
   ngOnInit() {
-    this.temp.forEach(item => {
-      const tabc: TabComponent = new TabComponent();
-      tabc.tabId = item.tabid;
-      tabc.server = item.server;
-      tabc.database = item.database;
-      tabc.active = item.active;
-
-      this.addTab(tabc);
+    this.comm.userInfoLoaded.subscribe(() => {
+      //Need to load up the default selected tab for this user
+      if(this.store.getUserValue("server") != "")
+      {
+        this.addTab();
+      }
     });
   }
 
   selectTab(tab: Tab) {
-    this.tabs.forEach((tab) => {
-      tab.active = false;
-    });
-
-    tab.active = true;
-    console.log('tab selected');
+    this.selectedTab = tab.tabindex;
   }
 
-  addTab(tab: TabComponent) {
-    if (this.tabs.length === 0) {
-      tab.active = true;
-    }
+  addTab() {
+    //Create a new tab
+    var tabCont:Tab = new Tab();
+    tabCont.tabid = "tab0" + (this.tabs.length + 1);
+    tabCont.tabindex = this.tabs.length;
+    tabCont.server = this.store.getUserValue("server");
+    tabCont.servername = this.store.getUserValue("servername");
+    tabCont.database = this.store.getUserValue("database");
+    tabCont.tabtitle = tabCont.servername.toUpperCase() + " - " + tabCont.database.toUpperCase();
+    tabCont.active = false;
+    this.tabs.push(tabCont);
 
-    this.tabs.push(tab);
+    //Select the defaulted table now
+    this.selectTab(this.tabs[this.tabs.length - 1]); 
   }
 
 }

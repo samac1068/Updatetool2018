@@ -1,0 +1,7 @@
+<data>
+    <sources>
+        <source type="LOCAL" active="true">http://localhost:64813/UserW</source>
+        <source type="DEV" active="false">https://demo.mkgcs.com/querytool/WebServices</source>
+        <source type="PROD" active="false">https://mobcop.army.mil/querytool/WebServices</source>
+    </sources>
+</data>

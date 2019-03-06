@@ -1,16 +1,18 @@
 <div id="serverGrp" class="btn-group">
   <div>
     <label for="serverList">Server:
-      <select id="serverList" class="form-control optionGrp">
-        <option>Select a Server</option>
+      <select id="serverList" class="form-control optionGrp" [(ngModel)]="defaultServer">
+          <option [ngValue]="null">Select a Server</option>
+        <option *ngFor="let server of servers" [value]="server.id">{{ server.id }}</option>
       </select>
     </label>
   </div>
 
   <div style="margin-left: 20px">
     <label for="dbList">Database:
-      <select id="dbList" class="form-control optionGrp">
-          <option>Select a Database</option>
+      <select id="dbList" class="form-control optionGrp" [(ngModel)]="defaultDB">
+        <option [ngValue]="null">Select a Database</option>  
+        <option *ngFor="let database of databases" [value]="database.id">{{ database.id }}</option>
       </select>
     </label>
   </div>
@@ -21,7 +23,8 @@
 <div id="queryGrp" class="btn-group">
   <label for="queryList">Your Saved Queries:
     <select id="queryList" class="form-control optionGrp">
-      <option>Select a Query</option>
+      <option [ngValue]="null">Select a Query</option>
+      <option *ngFor="let query of queries" [value]="query.id" >{{ query.QueryTitle }}</option>
     </select>
   </label>
 

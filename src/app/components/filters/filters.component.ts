@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 
-import * as $ from 'jquery';
 import 'datatables.net';
 import 'datatables.net-bs4';
+import {StorageService} from '../../services/storage.service';
+import { Tab } from 'src/app/models/Tab.model';
 
 @Component({
   selector: 'app-filters',
@@ -10,28 +11,16 @@ import 'datatables.net-bs4';
   styleUrls: ['./filters.component.css']
 })
 export class FiltersComponent implements OnInit {
-  tableName: any[] = [];
-  dataTable: any;
+  @Input() tabinfo: Tab;
+  
+  rowOpt = [];
+  conditionalOpt = [];
 
-  constructor() { }
+  constructor(private store: StorageService) { }
 
   ngOnInit() {
-   /* const table: any = $('dbFilters');
-    this.dataTable = table.DataTable({
-      'aaData': this.tableName,
-      'scrollY': '25vh',
-      'paging': false,
-      'bSortClasses': false,
-      'bInfo': false,
-      'sDom': '<"H"lr>t<"F"ip>',
-      'oLanguage': {
-        'sSearch': 'Filter: ',
-        'sEmptyTable': 'No Table Fields Found'
-      },
-      'aoColumns': [
-        { 'sTitle': 'Field', mData: 'field'}
-      ]
-    });*/
+    this.rowOpt = this.store.rowOptions;
+    this.conditionalOpt = this.store.conditionals
   }
 
 }
