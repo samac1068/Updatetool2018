@@ -4,7 +4,7 @@
   float: left;
   width: 75%;
   height: 79%;
-  border: 1px solid #DDD;
+  border: 1px solid #BBB;
 }
 
 #selectPnl {
@@ -12,7 +12,12 @@
   margin-left: 76.5%;
   height: 78.7%;
   width: 23%;
-  border: 1px solid #DDD;
+  /* border: 1px solid #DDD; */
 }
 
+/* #separator {
+  height: 79%;
+  width:2px;
+  background-color: #000;
+} */
 

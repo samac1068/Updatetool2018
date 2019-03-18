@@ -1,3 +1,4 @@
+import { SortItem } from './SortItem.model';
 import { Column } from './Column.model';
 import { Table } from "./Table.model";
 
@@ -16,11 +17,14 @@ export class Tab {
   seltbllist: Table[];
   querystr: string;
   
+  databasearr: any[]; //id number, database name
+  tablearr: any[];    //id number, table name, database id
   colfilterarr: string[];
   availcolarr: string[];
   joinarr: string[];
   wherearr: string[];
-  orderarr: string[];
+  wherearrcomp: any[];
+  orderarr: SortItem[];
 
   getcount: boolean;
   limitRows: boolean;

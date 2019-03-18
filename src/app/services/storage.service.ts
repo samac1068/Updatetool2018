@@ -20,9 +20,10 @@ export class StorageService {
   system: System = new System();
 
   // Variable Constant
-  rowOptions: any[] = [{lbl:'1 Row', value: 'TOP 1 '}, {lbl: '10 Rows', value: 'TOP 10 '}, {lbl: '50 Rows', value: 'TOP 50 '}, {lbl:'100 Rows', value: 'TOP 100 '},
-    {lbl: '1000 Rows', value: 'TOP 1000 '}, {lbl: '2000 Rows', value: 'TOP 2000 '}, {lbl:'All Rows', value: "* "}];
-  conditionals: string[] = ["LIKE","=","<>","!=",">",">=","!>","<","<=","!<","IN","IS NULL","IS NOT NULL"];
+  rowOptions: any[] = [{lbl:'1 Row', value: 1}, {lbl: '10 Rows', value: 10}, {lbl: '50 Rows', value: 50}, {lbl:'100 Rows', value: 100},
+    {lbl: '1000 Rows', value: 1000}, {lbl: '2000 Rows', value: 2000}, {lbl:'All Rows', value: -9}];
+  conditionals: string[] = ["AND", "OR"];
+  operators: string[] = ["LIKE","NOT LIKE","=","<>","!=",">",">=","!>","<","<=","!<","IN","IS NULL","IS NOT NULL"];
 
   constructor() { }
 
@@ -65,5 +66,24 @@ export class StorageService {
 
   getURL() {
     return this._url;
+  }
+
+  /// Global Services - Let's see if this will work
+  findIndexByValue(arr: any, key: string, value: any){
+    for (var i = 0; i < arr.length; i++) {
+      if (arr[i][key] === value) {
+          return i;
+      }
+    }
+    return -1;
+  }
+
+  findObjByValue(arr: any, key: string, value: any){
+    for (var i = 0; i < arr.length; i++) {
+      if (arr[i][key] === value) {
+          return arr[i];
+      }
+    }
+    return null;
   }
 }

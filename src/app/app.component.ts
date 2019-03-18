@@ -62,7 +62,6 @@ export class AppComponent implements OnInit {
       this.store.setUserValue("tokencreatedate", result[0]["CreateDate"]);
       
       //Signal that user has been validated
-      //this.comm.userValidated.emit(true);
       this.getUserInformation();
     });
   }

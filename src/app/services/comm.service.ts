@@ -8,8 +8,10 @@ export class CommService {
     tableSelected = new EventEmitter();    //When a table is selected from the list
     columnsUpdated = new EventEmitter();    //After the table is loaded and a list of columns is retrieved
 
+    runQueryChange = new EventEmitter();
+    
     // Buttons Clicked Events
     columnBtnClicked = new EventEmitter();    //Customize Column Button clicked
-    
-
+    orderByBtnClicked = new EventEmitter();    //Order By Button clicked
+    joinBtnClicked = new EventEmitter();
 }

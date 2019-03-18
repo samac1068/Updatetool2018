@@ -1,11 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 
-import { User } from '../models/User.model';
 import { StorageService } from './storage.service';
-import { Query } from '../models/Query.model';
-import { Table } from '../models/Table.model';
 
 @Injectable({
   providedIn: 'root'
@@ -19,20 +16,20 @@ export class DataService {
   }
 
   /** Get the user information from the server **/
-  getLocalToken(username: string): Observable<any> {
+  getLocalToken(username: string): Observable<string> {
     return this.http.get<string>(`${this.getWSPath()}RequestLocalToken/${this.store.getPassKey()}/${username}`);
   }
 
-  closeTokenSession() {
+  closeTokenSession(): Observable<any> {
     return this.http.get(`${this.getWSPath()}CloseTokenSession/${this.store.user['token']}/${this.store.getUserValue('username')}`);
   }
 
-  getUserSessionInfo(): Observable<any> {
+  getUserSessionInfo() {
     return this.http.get(`${this.getWSPath()}GetUserSessionInfo`);
   }
 
   //First service called when the application is first executed, unless executed locally
-  validateUserToken(token: string): Observable<any> {
+  validateUserToken(token: string) {
     return this.http.get(`${this.getWSPath()}ValidateUserToken/${this.store.getPassKey()}/${token}`);
   }
 
@@ -45,7 +42,7 @@ export class DataService {
     return this.http.get(`${this.getWSPath()}GetUserSavedQueries/${this.store.getPassKey()}/${this.store.getUserValue('userid')}`);
   }
 
-  getAppUpdates() {
+  getAppUpdates(): Observable<any> {
     return this.http.get(`${this.getWSPath()}GetAppUpdates/${this.store.getPassKey()}/${this.store.user['token']}`);
   }
 
@@ -57,7 +54,7 @@ export class DataService {
     return this.http.get(`${this.getWSPath()}GetQueryData/${this.store.getPassKey()}/${server}/${db}/${tbl}/${col}/${where}/${join}/${order}/${cnt}/${lmtrow}/${speccnt}`);
   }
 
-  getTableProperties(server: string, db: string, tbl: string) {
-    return this.http.get(`${this.getWSPath()}GetTableProperties/${this.store.getPassKey()}/${server}/${db}/${tbl}`);
+  getTableProperties(server: string, db: string, tbl: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.getWSPath()}GetTableProperties/${this.store.getPassKey()}/${server}/${db}/${tbl}`);
   }
 }

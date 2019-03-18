@@ -40,6 +40,8 @@ export class TabsComponent implements OnInit {
     tabCont.server = this.store.getUserValue("server");
     tabCont.servername = this.store.getUserValue("servername");
     tabCont.database = this.store.getUserValue("database");
+    tabCont.databasearr = [];
+    tabCont.databasearr.push({id: tabCont.databasearr.length + 1, name: tabCont.database });
     tabCont.tabtitle = tabCont.servername.toUpperCase() + " - " + tabCont.database.toUpperCase();
     tabCont.active = false;
     this.tabs.push(tabCont);

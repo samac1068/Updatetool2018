@@ -1,5 +1,3 @@
-import { ConfigService } from './services/config.service';
-import { DataService } from './services/data.service';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
@@ -18,16 +16,30 @@ import { TablesComponent } from './components/tables/tables.component';
 import { QueryBtnsComponent } from './components/query-btns/query-btns.component';
 import { FiltersComponent } from './components/filters/filters.component';
 import { DataTablesModule } from 'angular-datatables';
-import { StorageService } from './services/storage.service';
 import { HttpClientModule } from '@angular/common/http';
-import { MatTabsModule } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TableFilterPipe } from './services/tablefilter.pipe';
+
+// Services
+import { StorageService } from './services/storage.service';
+import { ConfirmationDialogService } from  './services/confirm-dialog.service';
+import { ConfigService } from './services/config.service';
+import { DataService } from './services/data.service';
+
+// Angular Material Imports
+import { MatTabsModule } from '@angular/material';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+
+// Dialog Imports
 import { ColumnsDialogComponent } from './dialogs/columns-dialog/columns-dialog.component';
+import { ConfirmDialogComponent } from './dialogs/confirm-dialog/confirm-dialog.component';
+import { OrderbyDialogComponent } from './dialogs/orderby-dialog/orderby-dialog.component';
+import { JoinDialogComponent } from './dialogs/join-dialog/join-dialog.component';
 
 @NgModule({
   declarations: [
@@ -43,7 +55,10 @@ import { ColumnsDialogComponent } from './dialogs/columns-dialog/columns-dialog.
     QueryBtnsComponent,
     FiltersComponent,
     TableFilterPipe,
-    ColumnsDialogComponent
+    ColumnsDialogComponent,
+    ConfirmDialogComponent,
+    OrderbyDialogComponent,
+    JoinDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -58,16 +73,21 @@ import { ColumnsDialogComponent } from './dialogs/columns-dialog/columns-dialog.
     MatTableModule,
     MatPaginatorModule,
     MatSortModule,
-    MatDialogModule
+    MatDialogModule,
+    MatCheckboxModule
   ],
   providers: [
     DataService,
     StorageService,
-    ConfigService
+    ConfigService,
+    ConfirmationDialogService
   ],
   bootstrap: [AppComponent],
   entryComponents: [
-    ColumnsDialogComponent
+    ColumnsDialogComponent,
+    ConfirmDialogComponent,
+    OrderbyDialogComponent,
+    JoinDialogComponent
   ]
 })
 export class AppModule { }

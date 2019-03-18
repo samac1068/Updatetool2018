@@ -20,6 +20,13 @@ export class QueryBtnsComponent implements OnInit {
     if(this.tabinfo.table)
       this.comm.columnBtnClicked.emit();
     else
-      alert("You need to select a table first");
+      alert("You must select a table first.");
+  }
+
+  openOrderByWindow() {
+    if(this.tabinfo.table)
+      this.comm.orderByBtnClicked.emit();
+    else
+      alert("You must select a table first.");
   }
 }

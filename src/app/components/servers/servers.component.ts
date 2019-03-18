@@ -31,7 +31,7 @@ export class ServersComponent implements OnInit {
     this.comm.userInfoLoaded.subscribe(() => {
       //Now we can load and set the default selections for this user
       this.user = this.store.getUser();
-
+     
       //set default selections
       this.defaultServer = this.store.getUserValue("servername");
       this.defaultDB = this.store.getUserValue("database");
@@ -44,9 +44,6 @@ export class ServersComponent implements OnInit {
       //Now load the selection fields. 
       this.servers = this.store.system['servers'];
       this.databases = this.store.system['databases'];
-    })
-
-    
+    });
   }
-
 }

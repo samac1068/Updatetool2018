@@ -16,6 +16,9 @@
 
 .filtersGrp {
   margin-top: 10px;
+  height: 120px;
+  border: 1px solid lightgray;
+  overflow-y: auto;
 }
 
 .offsetRight {
@@ -25,9 +28,25 @@
 
 .fieldSelect {
   margin-top: 5px;
+  margin-left: 10px;
 }
 
-#txtFilterText {
+#txtFilterText, #txtBitInput {
   width: 97%;
   font-size: 11px;
+}
+
+.columnSelect {
+  margin-top: 20px;
+  margin-left: 10px;
+}
+
+.header {
+  border: 1px solid black;
+  font-weight: bold;
+  font-size: 13px;
+}
+
+.data {
+  border: 1px solid gray;
 }

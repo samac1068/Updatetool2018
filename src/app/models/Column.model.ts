@@ -10,4 +10,8 @@ export class Column
     precise: number;
     scale: number;
     charfulllength: number;
+    selected: boolean;
+    orderby: boolean;
+    orderbysort: string;
+    orderbyindex: number;
 } 
