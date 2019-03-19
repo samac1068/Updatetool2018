@@ -71,7 +71,7 @@ export class StorageService {
   /// Global Services - Let's see if this will work
   findIndexByValue(arr: any, key: string, value: any){
     for (var i = 0; i < arr.length; i++) {
-      if (arr[i][key] === value) {
+      if (arr[i][key].toLowerCase() === value.toLowerCase()) {
           return i;
       }
     }
@@ -80,8 +80,17 @@ export class StorageService {
 
   findObjByValue(arr: any, key: string, value: any){
     for (var i = 0; i < arr.length; i++) {
-      if (arr[i][key] === value) {
+      if (arr[i][key].toLowerCase() === value.toLowerCase()) {
           return arr[i];
+      }
+    }
+    return null;
+  }
+
+  returnColByKey(arr: any, key: string, value: any, rtncol: string){
+    for (var i = 0; i < arr.length; i++) {
+      if (arr[i][key].toLowerCase() === value.toLowerCase()) {
+          return arr[i][rtncol];
       }
     }
     return null;

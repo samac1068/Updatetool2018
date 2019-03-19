@@ -43,11 +43,11 @@ export class DataService {
   }
 
   getAppUpdates(): Observable<any> {
-    return this.http.get(`${this.getWSPath()}GetAppUpdates/${this.store.getPassKey()}/${this.store.user['token']}`);
+    return this.http.get<any[]>(`${this.getWSPath()}GetAppUpdates/${this.store.getPassKey()}/${this.store.user['token']}`);
   }
 
   getTableDBList(server: string, db: string) {
-    return this.http.get(`${this.getWSPath()}GetDbTableList/${this.store.getPassKey()}/${server}/${db}`);
+    return this.http.get<any[]>(`${this.getWSPath()}GetDbTableList/${this.store.getPassKey()}/${server}/${db}`);
   }
 
   getQueryData(server: string, db: string, tbl: string, col: string, where: string, join: string, order: string, cnt: boolean, lmtrow: boolean, speccnt: string) {

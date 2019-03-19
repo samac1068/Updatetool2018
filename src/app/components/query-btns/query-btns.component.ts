@@ -20,13 +20,20 @@ export class QueryBtnsComponent implements OnInit {
     if(this.tabinfo.table)
       this.comm.columnBtnClicked.emit();
     else
-      alert("You must select a table first.");
+      alert("Custom Column Error: You must select a table first.");
   }
 
   openOrderByWindow() {
     if(this.tabinfo.table)
       this.comm.orderByBtnClicked.emit();
     else
-      alert("You must select a table first.");
+      alert("Order By Error: You must select a table first.");
+  }
+
+  openJoinWindow() {
+    if(this.tabinfo.table)
+      this.comm.joinBtnClicked.emit();
+    else
+      alert("Join Error: You must select a table first.")
   }
 }

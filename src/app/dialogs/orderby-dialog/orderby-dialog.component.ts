@@ -4,6 +4,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { Tab } from 'src/app/models/Tab.model';
 import { SortItem } from 'src/app/models/SortItem.model';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-orderby-dialog',
@@ -61,5 +62,9 @@ export class OrderbyDialogComponent implements OnInit {
      this.data.orderarr = this.selOrderBy;
 
      this.closeDialog();
+  }
+
+  drop(event: CdkDragDrop<string[]>) {
+    moveItemInArray(this.selOrderBy, event.previousIndex, event.currentIndex);
   }
 }

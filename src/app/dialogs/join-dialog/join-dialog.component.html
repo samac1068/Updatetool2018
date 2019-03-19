@@ -1,3 +1,25 @@
-<p>
-  join-dialog works!
-</p>
+<div class="outerbox">
+  <div class="leftbox">
+    <div class="jointable">
+      <label style="margin-left:5px; font-size:13px; font-weight: bold;" >Join Table</label>
+      <div class="spacer">
+        <mat-form-field>
+            <mat-label>Database:</mat-label>
+            <mat-select [(ngModel)]="joindatabase" (selectionChange)="getAvailableTables()">
+              <mat-option>None</mat-option>
+              <mat-option *ngFor="let db of databasearr" [value]="db">{{ db }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+      </div>
+      <div class="spacer">
+        <mat-form-field>
+            <mat-label>Table:</mat-label>
+            <mat-select [(ngModel)]="jointable" [disabled]="joindatabase.length == 0">
+              <mat-option>None</mat-option>
+              <mat-option *ngFor="let tbl of tablearr" [value]="tbl">{{ tbl.Name }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+      </div>
+    </div>
+  </div>
+</div>

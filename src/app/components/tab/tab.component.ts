@@ -77,7 +77,7 @@ export class TabComponent implements OnInit {
     //Join button clicked
     this.comm.joinBtnClicked.subscribe(() => {
       //Open a dialog window
-      const dialogRef = this.dialog.open(JoinDialogComponent, {width: '650px', height: '400px', autoFocus: true, data: this.tabinfo });
+      const dialogRef = this.dialog.open(JoinDialogComponent, {width: '700px', height: '450px', autoFocus: true, data: this.tabinfo });
       dialogRef.afterClosed().subscribe(() => {
         //this.comm.runQueryChange.emit();
       });

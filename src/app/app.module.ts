@@ -34,6 +34,7 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { MatSelectModule } from '@angular/material/select';
 
 // Dialog Imports
 import { ColumnsDialogComponent } from './dialogs/columns-dialog/columns-dialog.component';
@@ -74,7 +75,9 @@ import { JoinDialogComponent } from './dialogs/join-dialog/join-dialog.component
     MatPaginatorModule,
     MatSortModule,
     MatDialogModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    MatSelectModule,
+    DragDropModule
   ],
   providers: [
     DataService,

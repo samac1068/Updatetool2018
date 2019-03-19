@@ -20,6 +20,7 @@ export class AppComponent implements OnInit {
   ngOnInit() {
     this.getSystemConfig();
     this.getServerConfig();
+    this.identifyLocale();
     this.captureUserTokenData();
   }
 
@@ -33,6 +34,21 @@ export class AppComponent implements OnInit {
     const results = this.config.getServerConfig();
     this.store.setSystemValue('servers', results.servers);
     this.store.setSystemValue('databases', results.databases);
+  }
+
+  identifyLocale(){
+    switch(this.store.system['webservice']['type'])
+    {
+        case 'LOCAL':
+          this.store.system['webservice']['locale'] = 'herndon';
+          break;
+        case 'DEV':
+          this.store.system['webservice']['locale'] = 'development';
+          break;
+        case 'PROD':
+          this.store.system['webservice']['locale'] = 'production';
+          break;
+    }
   }
 
   captureUserTokenData() {

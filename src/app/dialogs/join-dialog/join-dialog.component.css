@@ -1,0 +1,20 @@
+.outerbox {
+    width: 650px;
+    height: 400px;
+    border: 1px solid #0b4508;
+}
+
+.leftbox {
+    margin: 5px 0 0 5px;
+
+}
+.jointable {
+    width: 250px;
+    height: 130px;
+    border: 1px solid green;
+    margin: 5px 0 0 5px;
+}
+
+.spacer {
+    margin-left: 10px;
+}
