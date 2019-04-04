@@ -12,7 +12,7 @@ export class DataService {
   constructor(private http: HttpClient, private store: StorageService) { }
 
   private getWSPath(): string {
-    return this.store.getURL();
+    return this.store.system['webservice']['path'];
   }
 
   /** Get the user information from the server **/
@@ -43,7 +43,11 @@ export class DataService {
   }
 
   getAppUpdates(): Observable<any> {
-    return this.http.get<any[]>(`${this.getWSPath()}GetAppUpdates/${this.store.getPassKey()}/${this.store.user['token']}`);
+    return this.http.get<any[]>(`${this.getWSPath()}GetAppUpdates/${this.store.getPassKey()}`);
+  }
+  
+  updateUserVersion(version: string): Observable<any> {
+    return this.http.get<any[]>(`${this.getWSPath()}UpdateUserDate/${this.store.getPassKey()}/${this.store.getUserValue('userid')}/${version}`);
   }
 
   getTableDBList(server: string, db: string) {
@@ -56,5 +60,34 @@ export class DataService {
 
   getTableProperties(server: string, db: string, tbl: string): Observable<any[]> {
     return this.http.get<any[]>(`${this.getWSPath()}GetTableProperties/${this.store.getPassKey()}/${server}/${db}/${tbl}`);
+  }
+
+  getStoreProcList(server: string, db: string) {
+    return this.http.get<any[]>(`${this.getWSPath()}GetStoreProcList/${this.store.getPassKey()}/${server}/${db}`);
+  }
+
+  getStoredViewList(server: string, db: string) {
+    return this.http.get<any[]>(`${this.getWSPath()}GetStoredViewList/${this.store.getPassKey()}/${server}/${db}`);
+  }
+
+  getStoredFunctionsList(server: string, db: string) {
+    return this.http.get<any[]>(`${this.getWSPath()}GetStoredFunctionsList/${this.store.getPassKey()}/${server}/${db}`);
+  }
+
+  getStoredValues(server: string, db: string, itemname: string) {
+    return this.http.get<any[]>(`${this.getWSPath()}ReturnStr_StoredValues/${this.store.getPassKey()}/${server}/${db}/${itemname}`);
+  }
+
+  executeQStr(queryid: number) {
+    return this.http.get<any[]>(`${this.getWSPath()}CaptureQStr/${this.store.getPassKey()}/${queryid}`);
+  }
+
+  addEditUpdateUserInfo(username: string, firstname: string, lastname:string, network: string, userid: number) {
+    var action: string = (userid == -9) ? "add" : "edit";
+    return this.http.get<any[]>(`${this.getWSPath()}AddEditUpdateUserInfo/${this.store.getPassKey()}/${action}/${username}/${firstname}/${lastname}/${network}/${userid}`);
+  }
+
+  storeNewQuery(title: string, body: string, server: string, database: string, userid: string) {
+    return this.http.get<any[]>(`${this.getWSPath()}StoreUserQuery/${this.store.getPassKey()}/${this.store.customURLEncoder(title)}/${this.store.customURLEncoder(body)}/${server}/${database}/${userid}`);
   }
 }

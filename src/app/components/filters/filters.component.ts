@@ -29,6 +29,8 @@ export class FiltersComponent implements OnInit {
   filterAdded: boolean = false;
   hasWhere: boolean = false;
   colSelected: boolean = false;
+
+  addUpdateBtn: string = "Add";
   
   constructor(private store: StorageService, private comm: CommService, private dialogBox: ConfirmationDialogService) { }
 
@@ -151,6 +153,9 @@ export class FiltersComponent implements OnInit {
     this.curColumnType = this.tabinfo.wherearrcomp[i].type;
     this.curWID = this.tabinfo.wherearrcomp[i].wid;
     this.curIndex = i;
+
+    //Need to update the value of the button label
+    this.addUpdateBtn = "Update";
   }
 
   findIndexByWID(wid: number){
@@ -174,6 +179,7 @@ export class FiltersComponent implements OnInit {
 
   applyWhereClause(){
     if(this.tabinfo.wherearrcomp.length > 0 || this.tabinfo.getcount || this.tabinfo.limitRows){
+      this.addUpdateBtn = "Add";
       this.comm.runQueryChange.emit();
     }
   }

@@ -1,3 +1,4 @@
+import { CommService } from 'src/app/services/comm.service';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -7,9 +8,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ExporterComponent implements OnInit {
 
-  constructor() { }
+  constructor(private comm: CommService) { }
 
   ngOnInit() {
   }
 
+  exportToExcelHandler() {
+    this.comm.exportToExcelClicked.emit();
+  }
 }

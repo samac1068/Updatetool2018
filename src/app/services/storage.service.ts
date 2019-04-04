@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-
 import { System } from '../models/System.model';
 import { User } from '../models/User.model';
+import { Tab } from '../models/Tab.model';
 
 @Injectable({
   providedIn: 'root'
@@ -12,12 +12,14 @@ export class StorageService {
   private _appKey = 'MMA';
   private _passKey = "4A3F6BD3-61FB-467B-83D0-0EFBAF72AFC4";
   private _connectid = 'MobCopConnectionString';
-  private  _url = 'http://localhost:64813/UserW/';
+  private _inDev: boolean = true;
 
   // Public
   tabsArr = [];
   user: User = new User();
   system: System = new System();
+  selectedTabID: string;
+  selectedTab: Tab;
 
   // Variable Constant
   rowOptions: any[] = [{lbl:'1 Row', value: 1}, {lbl: '10 Rows', value: 10}, {lbl: '50 Rows', value: 50}, {lbl:'100 Rows', value: 100},
@@ -64,8 +66,12 @@ export class StorageService {
     return this._connectid;
   }
 
-  getURL() {
-    return this._url;
+  isDevMode() {
+    return this._inDev;
+  }
+
+  shutOffDev() {
+    this._inDev = false;
   }
 
   /// Global Services - Let's see if this will work
@@ -87,12 +93,36 @@ export class StorageService {
     return null;
   }
 
-  returnColByKey(arr: any, key: string, value: any, rtncol: string){
+  returnColByStringKey(arr: any, key: any, value: any, rtncol: string){
     for (var i = 0; i < arr.length; i++) {
       if (arr[i][key].toLowerCase() === value.toLowerCase()) {
           return arr[i][rtncol];
       }
     }
     return null;
+  }
+
+  searchArr(arr: any, value: any): number {
+    for(var i = 0; i < arr.length; i++){
+      if(arr[i] == value)
+        return i;
+    }
+
+    return -1;
+  }
+
+  customURLEncoder(str: string) {
+    str = str.replace(/^\s+|\s+$/gm,'');
+    str = str.replace(/ /gi, "%20");
+    str = str.replace(/\*/gi, "!");
+    
+    return str;
+  }
+
+  customURLDecoder(str: string) {
+    str = str.replace(/%20/gi, " "); 
+    str = str.replace(/\!/gi, "*"); 
+  
+    return str;
   }
 }

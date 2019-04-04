@@ -3,7 +3,7 @@
     <span class="fieldLabel">Where Clause and Filters:</span><br/>
     <input type="checkbox" id="chkReturnRowCnt" [(ngModel)]="tabinfo.getcount" (click)="updateGetCount()" style="margin-top:5px;"> Return Only # of Rows<br />
     <input type="checkbox" id="chkReturnTop" (click)="allowLimitSelect()" style="margin-top: 5px;"> Return Top:
-    <select id="ddlTopReturn" style="width: 75%" [disabled]="!tabinfo.limitRows" [(ngModel)]="tabinfo.selectcnt">
+    <select id="ddlTopReturn" style="width: 247px" [disabled]="!tabinfo.limitRows" [(ngModel)]="tabinfo.selectcnt">
       <option value="-1"></option>
       <option *ngFor="let row of rowOpt" value="{{ row.value }}">{{ row.lbl }}</option>
     </select>
@@ -37,18 +37,18 @@
   <div class="columnSelect">
     <span class="fieldLabel">Cond:</span>
     <span class="fieldLabel" style="margin-left: 30px;">Columns:</span>
-    <span class="fieldLabel offsetRight">Operators:</span>
+    <span class="fieldLabel" style="margin-left: 135px;">Operators:</span>
 
     <div style="margin-top: 3px;">
       <select id="ddlConditionalList" style="width: 60px" [(ngModel)]="curCondition" [disabled]="!tableSelected">
           <option value="-9"></option>
           <option *ngFor="let condit of conditionalOpt" value="{{ condit }}">{{ condit }}</option>
       </select>
-      <select id="ddlColumnList" style="width: 57%; margin-left:3px;" [(ngModel)]="curColumn" [disabled]="!tableSelected" (change)="determineType()">
+      <select id="ddlColumnList" style="width: 185px; margin-left:3px;" [(ngModel)]="curColumn" [disabled]="!tableSelected" (change)="determineType()">
         <option value="-9"></option>
         <option *ngFor="let col of tabinfo.columns">{{ col.columnname }}</option>
       </select>
-      <select id="ddlOperatorList" style="width: 20%" class="offsetRight" [(ngModel)]="curOperator" [disabled]="!tableSelected">
+      <select id="ddlOperatorList" style="width: 70px; margin-left: 5px;" [(ngModel)]="curOperator" [disabled]="!tableSelected">
         <option *ngFor="let operator of operatorOpt" value="{{ operator }}">{{ operator }}</option>
       </select>
     </div>
@@ -66,10 +66,12 @@
       </select>
     </div>
     
-    <div style="margin-top: 10px; width: 100%">
-      <button class="standardBtn" style="width: 100px" (click)="removeAllWhereItems()" [disabled]="!hasWhere">Clear All</button>
-      <button class="standardBtn" style="margin-left:20px; width:100px;" (click)="buildWhereItem()" [disabled]="!curInput">Add</button>
-      <button class="focusBtn" style="float: right; width:100px;" (click)="applyWhereClause()" [disabled]="!tableSelected || !filterAdded">Apply</button>
+    <div style="margin-top: 10px; margin-left: -10px; width:97%;">
+      <div class="row">
+        <div class="col-sm-4"><button class="standardBtn" style="width: 100px" (click)="removeAllWhereItems()" [disabled]="!hasWhere">Clear All</button></div>
+        <div class="col-sm-4"><button class="standardBtn" style="width:100px;" (click)="buildWhereItem()" [disabled]="!curInput">{{ addUpdateBtn }}</button></div>
+        <div class="col-sm-4"><button class="focusBtn" style="width:100px;" (click)="applyWhereClause()" [disabled]="!tableSelected || !filterAdded">Apply</button></div>
+      </div>
     </div>
   </div>
 </div>

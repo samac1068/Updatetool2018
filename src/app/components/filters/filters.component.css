@@ -16,6 +16,7 @@
 
 .filtersGrp {
   margin-top: 10px;
+  width: 330px;
   height: 120px;
   border: 1px solid lightgray;
   overflow-y: auto;
@@ -27,18 +28,20 @@
 }
 
 .fieldSelect {
+  width: 330px;
   margin-top: 5px;
-  margin-left: 10px;
+  margin-left: 5px;
 }
 
 #txtFilterText, #txtBitInput {
-  width: 97%;
+  width: 98%;
   font-size: 11px;
 }
 
 .columnSelect {
+  width: 330px;
   margin-top: 20px;
-  margin-left: 10px;
+  margin-left: 5px;
 }
 
 .header {

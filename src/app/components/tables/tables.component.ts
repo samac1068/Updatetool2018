@@ -43,6 +43,25 @@ export class TablesComponent implements OnInit {
     }
 
     this.tabinfo.seltbllist = tempArr;
+    this.storeTableList(tempArr);
+  }
+
+  storeTableList(tables: any) {
+    var index: number = 0;
+    var dbid: number = -1;
+
+    //Determine the DB ID
+    for (var db of this.tabinfo.databasearr) {
+      if(db.name == this.tabinfo.database){
+        dbid = db.id;
+        break;
+      }
+    }
+
+    for(var i=0; i < tables.length; i++) {
+      index++;
+      this.tabinfo.tablearr.push({id: index, name: tables[i].name, dbid: dbid}); 
+    }
   }
 
   tableClickHandler(table: Table) {
@@ -62,5 +81,12 @@ export class TablesComponent implements OnInit {
 
   resetSearchTerm() {
     this.searchTerm = "";
+  }
+
+  reloadCurrentData() {
+    if(this.tabinfo.querystr != "" && this.tabinfo.querystr != undefined)
+      this.comm.runQueryChange.emit();
+    else
+      alert("No query has been created. Request Aborted.");
   }
 }

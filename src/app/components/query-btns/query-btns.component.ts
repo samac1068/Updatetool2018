@@ -36,4 +36,15 @@ export class QueryBtnsComponent implements OnInit {
     else
       alert("Join Error: You must select a table first.")
   }
+
+  openViewerWindow() {
+    this.comm.viewerBtnClicked.emit();
+  }
+
+  exportToExcelHandler(type: string) {
+    if(this.tabinfo.table != undefined)
+      this.comm.exportToExcelClicked.emit(type);
+    else
+      alert("You must select table and have results to export data.");
+  }
 }

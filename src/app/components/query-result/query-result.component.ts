@@ -1,9 +1,11 @@
+import { ExcelService } from './../../services/excel.service';
 import { DataService } from './../../services/data.service';
 import { StorageService } from './../../services/storage.service';
 import { CommService } from './../../services/comm.service';
-import { Component, OnInit, Input, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
 import { Tab } from 'src/app/models/Tab.model';
-import { MatSort, MatTableDataSource } from '@angular/material';
+import { MatSort, MatTableDataSource, MatDialog } from '@angular/material';
+import { QueryDialogComponent } from 'src/app/dialogs/query-dialog/query-dialog.component';
 
 @Component({
   selector: 'app-query-result',
@@ -19,7 +21,7 @@ export class QueryResultComponent implements OnInit {
   rtnResults: any[];
   dataSource: any;
 
-  constructor(private comm: CommService, private data: DataService, private store: StorageService) { }
+  constructor(private comm: CommService, private data: DataService, private store: StorageService, private excel: ExcelService, public dialog: MatDialog) { }
 
   ngOnInit() {
     //Listner
@@ -30,6 +32,18 @@ export class QueryResultComponent implements OnInit {
     //Change to the query has happened so run the query
     this.comm.runQueryChange.subscribe(() => {
       this.constructSQLString();
+    });
+
+    this.comm.runStoredQuery.subscribe((data) => {
+      this.executeStoredQuery(data);
+    });
+
+    this.comm.exportToExcelClicked.subscribe((data) => {
+      this.exportAsXLSX(data);
+    });
+
+    this.comm.saveNewQuery.subscribe(() => {
+      this.saveCurrentQuery();
     });
   }
 
@@ -72,11 +86,11 @@ export class QueryResultComponent implements OnInit {
     strSQL += "FROM ";
     
     //Add the database and table info
-    strSQL += this.tabinfo.database + ".." + this.tabinfo.table.name + " ";
+    strSQL += "[" + this.tabinfo.database + "]..[" + this.tabinfo.table.name + "] ";
 
     //Add Join statement
     if(this.tabinfo.joinarr.length > 0)
-      strSQL += this.tabinfo.joinarr.join(' ');
+      strSQL += this.constructJoin();
     
     //Where Clause
     if(this.tabinfo.wherearrcomp.length > 0)
@@ -134,7 +148,7 @@ export class QueryResultComponent implements OnInit {
     return wStr;
   }
 
-  constructOrderBy(){
+  constructOrderBy() {
     var oStr: string = "ORDER BY ";
 
     for (var i = 0; i < this.tabinfo.orderarr.length; i++){
@@ -147,18 +161,40 @@ export class QueryResultComponent implements OnInit {
     return oStr;
   }
 
+  constructJoin() {
+    var jStr: string = "";
+
+    for (var i = 0; i < this.tabinfo.joinarr.length; i++){
+      jStr += " " + this.tabinfo.joinarr[i].joinclausestr;
+    }
+
+    return jStr;
+  }
+
   executeSQL(){
     //Run out and get what we need
-    var col: string = (this.tabinfo.colfilterarr[0] == "*") ? "" : this.tabinfo.colfilterarr.join();  //Separated by comma
-    var where: string = (this.tabinfo.wherearrcomp.length > 0) ? this.constructWhereClause() : "";  // Separated by a space
-    var join: string = this.tabinfo.joinarr.join(" ");    //Separated by a space
-    var order: string = (this.tabinfo.orderarr.length > 0) ? this.constructOrderBy() : "";     //Separated by a comma
+    var col: string = (this.tabinfo.colfilterarr[0] == "*") ? "" : this.tabinfo.colfilterarr.join();    //Separated by comma
+    var where: string = (this.tabinfo.wherearrcomp.length > 0) ? this.constructWhereClause() : "";      // Separated by a space
+    var join: string = (this.tabinfo.joinarr.length > 0) ? this.constructJoin() : "";                   //Separated by a space
+    var order: string = (this.tabinfo.orderarr.length > 0) ? this.constructOrderBy() : "";              //Separated by a comma
 
     this.data.getQueryData(this.tabinfo.server.replace('{0}', this.tabinfo.database), this.tabinfo.database, this.tabinfo.table.name, 
     (col.length == 0) ? '0' : col, (where.length == 0) ? '0' : where, (join.length == 0) ? '0' : join, (order.length == 0) ? '0' : order, 
       this.tabinfo.getcount, this.tabinfo.limitRows, this.tabinfo.selectcnt).subscribe((results) => {
         this.processReturnedData(results);
       });
+  }
+
+  executeStoredQuery(tab: Tab) {
+    //I need to confirm what tab I should be on
+    if(tab.sqid != undefined){
+      tab.querystr = this.tabinfo.sqbody;
+      this.data.executeQStr(tab.sqid).subscribe((results) => {
+        this.processReturnedData(results);
+      });
+    } else {
+      alert("Current tab id doesn't match that for the selected stored query.  Execution aborted.");
+    }
   }
 
   processReturnedData(results){
@@ -171,8 +207,27 @@ export class QueryResultComponent implements OnInit {
 
     //Load the data into the common variable
     this.dataSource = new MatTableDataSource(results);
-
-    //Enable sorting
     this.dataSource.sort = this.sort;
+  }
+
+  exportAsXLSX(type: string):void {
+    this.excel.exportAsExcelFile(this.dataSource.data, 'queryResults', type);
+  }
+
+  saveCurrentQuery() {
+    //Only save if this query ISN'T a currently store query
+    if(this.tabinfo.isstoredquery)
+      alert("This query is already saved.");
+    else {
+      const dialogRef = this.dialog.open(QueryDialogComponent, {width: '500px', height: '175px', autoFocus: true, data: this.tabinfo });
+      dialogRef.afterClosed().subscribe(() => {
+        if(this.tabinfo.querytitle != undefined) {
+          this.data.storeNewQuery(this.tabinfo.querytitle, this.tabinfo.querystr, this.tabinfo.server, this.tabinfo.database, this.store.getUserValue("userid"))
+          .subscribe(() => {
+            alert("The query has been stored under the title: " + this.tabinfo.querytitle + ".");
+          });
+        }
+      });
+    }
   }
 }

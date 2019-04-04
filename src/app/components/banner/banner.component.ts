@@ -1,9 +1,13 @@
+import { Build } from './../../models/Build.model';
 import { CommService } from './../../services/comm.service';
 import { DataService } from './../../services/data.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 
 import { User } from '../../models/User.model';
 import { StorageService } from '../../services/storage.service';
+import { OptionsDialogComponent } from 'src/app/dialogs/options-dialog/options-dialog.component';
+import { MatDialog } from '@angular/material';
+import { WhatsnewDialogComponent } from '../../dialogs/whatsnew-dialog/whatsnew-dialog.component';
 
 @Component({
   selector: 'app-banner',
@@ -12,16 +16,62 @@ import { StorageService } from '../../services/storage.service';
 })
 export class BannerComponent implements OnInit {
   user: User; // There can only be one user at a time
-  
-  constructor(private data: DataService, private store: StorageService, private comm: CommService) { }
+  build: Build;
+  version: string;
+
+  constructor(private data: DataService, private store: StorageService, private comm: CommService, public dialog: MatDialog) { }
 
   ngOnInit() {
     //Listing listeners and services
-
-    //After the user's information is loaded, then setup the appropriate fields
     this.comm.userInfoLoaded.subscribe(() => {
       this.user = this.store.getUser();
-    })
+      this.setupVersion();
+      this.confirmDisplayWhatsNew();
+    });
+
+    this.comm.noToolUserInfoFound.subscribe(() => {
+      //We need to collect more information before the user will allowed to use the tool
+      this.user = this.store.getUser();
+      this.openOptionsDialog();
+    });
   }
 
+  returnToOrders() {
+    window.history.back();
+  }
+
+  openOptionsDialog() {
+    const dialogRef = this.dialog.open(OptionsDialogComponent, { width: '500px', height: '340px', autoFocus: true, data: this.user });
+    dialogRef.afterClosed().subscribe((rtn) => {
+      if(rtn.datamodified) {
+        this.user.datamodified = false;
+        var network: string = this.user.servername + "|" + this.user.server + "^" + this.user.database;
+        this.data.addEditUpdateUserInfo(this.user.username, this.user.fname, this.user.lname, network, this.user.userid).subscribe((results) => {
+          if(results[0].UserID > 0) {
+            this.comm.userUpdatedReloadSys.emit();
+            alert("Your options have been updated.");
+          } else
+            alert("Possible issue when save the option information.");
+        });
+      }
+    });
+  }
+
+  setupVersion() {
+    this.build = this.store.getSystemValue("build");
+    this.version = "Version " + this.build[0].BuildVersion;
+  }
+
+  confirmDisplayWhatsNew() {
+    if(this.build[0].BuildVersion > this.user.lastversion)
+      this.displayWhatsNew();
+  }
+
+  displayWhatsNew() {
+    //Display the What's new page if there is something new since the last time it was checked.
+    const dialogRef = this.dialog.open(WhatsnewDialogComponent, { width: '700px', height: '550px', autoFocus: true, data: this.user });
+    dialogRef.afterClosed().subscribe((u) => {
+      this.user = u;
+    });
+  }
 }

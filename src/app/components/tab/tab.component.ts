@@ -8,6 +8,7 @@ import { MatDialog } from '@angular/material';
 import { ColumnsDialogComponent } from '../../../app/dialogs/columns-dialog/columns-dialog.component';
 import { Column } from '../../models/Column.model';
 import { OrderbyDialogComponent } from 'src/app/dialogs/orderby-dialog/orderby-dialog.component';
+import { ViewerDialogComponent } from 'src/app/dialogs/viewer-dialog/viewer-dialog.component';
 
 @Component({
   selector: 'app-tab',
@@ -17,16 +18,13 @@ import { OrderbyDialogComponent } from 'src/app/dialogs/orderby-dialog/orderby-d
 export class TabComponent implements OnInit {
 
   @Input() tabinfo: Tab;
+  tabid: string = "";
   
   constructor(private store: StorageService, private data: DataService, private comm: CommService, public dialog: MatDialog) { }
 
   ngOnInit() {
-    //Listeners
-    
     //Table was selected
     this.comm.tableSelected.subscribe((data) => {
-      this.tabinfo = data;  //Updating the information for all children that use it
-
       //Need to pull all of the columns for the selected table
       this.data.getTableProperties(this.tabinfo.server.replace('{0}', this.tabinfo.database), this.tabinfo.database, this.tabinfo.table.name).subscribe((results) => {
         this.tabinfo.columns = [];
@@ -50,6 +48,7 @@ export class TabComponent implements OnInit {
             r.selected = false;
             
           this.tabinfo.columns.push(r);
+          this.tabinfo.availcolarr.push(r);
         }
       });
 
@@ -58,29 +57,52 @@ export class TabComponent implements OnInit {
     
     //Custom Column button selected
     this.comm.columnBtnClicked.subscribe(() => {
-      //Now open the dialog with the information
-      const dialogRef = this.dialog.open(ColumnsDialogComponent, { width: '550px', height: '330px', autoFocus: true, data: this.tabinfo });
-      dialogRef.afterClosed().subscribe(() => {
-        this.comm.runQueryChange.emit();
-      });
+      if(this.tabinfo === this.store.selectedTab) {
+        //Now open the dialog with the information
+        const dialogRef = this.dialog.open(ColumnsDialogComponent, { width: '550px', height: '330px', autoFocus: true, data: this.tabinfo });
+        dialogRef.afterClosed().subscribe(() => {
+          this.comm.runQueryChange.emit();
+        });
+      }
     });
 
     //Order By button clicked
     this.comm.orderByBtnClicked.subscribe(() => {
-      //Open a dialog window
-      const dialogRef = this.dialog.open(OrderbyDialogComponent, {width: '600px', height: '450px', autoFocus: true, data: this.tabinfo });
-      dialogRef.afterClosed().subscribe(() => {
-        this.comm.runQueryChange.emit();
-      });
+      if(this.tabinfo === this.store.selectedTab) {
+        //Open a dialog window
+        const dialogRef = this.dialog.open(OrderbyDialogComponent, {width: '600px', height: '450px', autoFocus: true, data: this.tabinfo });
+        dialogRef.afterClosed().subscribe(() => {
+          this.comm.runQueryChange.emit();
+        });
+      }
     });
 
     //Join button clicked
     this.comm.joinBtnClicked.subscribe(() => {
-      //Open a dialog window
-      const dialogRef = this.dialog.open(JoinDialogComponent, {width: '700px', height: '450px', autoFocus: true, data: this.tabinfo });
-      dialogRef.afterClosed().subscribe(() => {
-        //this.comm.runQueryChange.emit();
-      });
+      if(this.tabinfo === this.store.selectedTab) {
+        //Open a dialog window
+        const dialogRef = this.dialog.open(JoinDialogComponent, {width: '700px', height: '520px', autoFocus: true, data: this.tabinfo });
+        dialogRef.afterClosed().subscribe(() => {
+          this.comm.runQueryChange.emit();
+        });
+      }
     });
+
+    // Proc Viewer clicked
+    this.comm.viewerBtnClicked.subscribe(() => {
+      if(this.tabinfo === this.store.selectedTab) {
+        //Open a dialog window
+        const dialogRef = this.dialog.open(ViewerDialogComponent, {width: '1000px', height: '730px', autoFocus: true, data: this.tabinfo });
+      }
+    });
+
+    // A stored query was requested
+    if(this.tabinfo.isstoredquery) {
+      setTimeout(() => {
+        if(this.tabinfo === this.store.selectedTab) {
+          this.comm.runStoredQuery.emit(this.tabinfo);
+        }
+      }, 500);
+    }
   }
 }

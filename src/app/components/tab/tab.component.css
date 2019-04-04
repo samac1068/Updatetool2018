@@ -2,22 +2,14 @@
 #queryresult {
   margin-left: 18px;
   float: left;
-  width: 75%;
+  width: 77.5%;
   height: 79%;
   border: 1px solid #BBB;
 }
 
 #selectPnl {
   position: absolute;
-  margin-left: 76.5%;
+  margin-left: 79%; 
   height: 78.7%;
-  width: 23%;
-  /* border: 1px solid #DDD; */
+  width: 21%;
 }
-
-/* #separator {
-  height: 79%;
-  width:2px;
-  background-color: #000;
-} */
-

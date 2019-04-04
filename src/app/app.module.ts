@@ -19,12 +19,14 @@ import { DataTablesModule } from 'angular-datatables';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TableFilterPipe } from './services/tablefilter.pipe';
+import { jqxGridComponent } from 'jqwidgets-scripts/jqwidgets-ts/angular_jqxgrid';
 
 // Services
 import { StorageService } from './services/storage.service';
 import { ConfirmationDialogService } from  './services/confirm-dialog.service';
 import { ConfigService } from './services/config.service';
 import { DataService } from './services/data.service';
+import { ExcelService } from './services/excel.service';
 
 // Angular Material Imports
 import { MatTabsModule } from '@angular/material';
@@ -35,12 +37,23 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatSelectModule } from '@angular/material/select';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatInputModule } from '@angular/material';
+import { MatButtonModule } from '@angular/material/button';
 
 // Dialog Imports
 import { ColumnsDialogComponent } from './dialogs/columns-dialog/columns-dialog.component';
 import { ConfirmDialogComponent } from './dialogs/confirm-dialog/confirm-dialog.component';
 import { OrderbyDialogComponent } from './dialogs/orderby-dialog/orderby-dialog.component';
 import { JoinDialogComponent } from './dialogs/join-dialog/join-dialog.component';
+import { OkDialogService } from './services/ok-dialog.service';
+import { OkDialogComponent } from './dialogs/ok-dialog/ok-dialog.component';
+import { ViewerDialogComponent } from './dialogs/viewer-dialog/viewer-dialog.component';
+import { OptionsDialogComponent } from './dialogs/options-dialog/options-dialog.component';
+import { QueryDialogComponent } from './dialogs/query-dialog/query-dialog.component';
+import { RouterModule } from '@angular/router';
+import { WhatsnewDialogComponent } from './dialogs/whatsnew-dialog/whatsnew-dialog.component';
+
 
 @NgModule({
   declarations: [
@@ -59,7 +72,13 @@ import { JoinDialogComponent } from './dialogs/join-dialog/join-dialog.component
     ColumnsDialogComponent,
     ConfirmDialogComponent,
     OrderbyDialogComponent,
-    JoinDialogComponent
+    JoinDialogComponent,
+    OkDialogComponent,
+    ViewerDialogComponent,
+    OptionsDialogComponent,
+    QueryDialogComponent,
+    jqxGridComponent,
+    WhatsnewDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -77,20 +96,31 @@ import { JoinDialogComponent } from './dialogs/join-dialog/join-dialog.component
     MatDialogModule,
     MatCheckboxModule,
     MatSelectModule,
-    DragDropModule
+    DragDropModule,
+    MatExpansionModule,
+    MatInputModule,
+    RouterModule.forRoot([]),
+    MatButtonModule
   ],
   providers: [
     DataService,
     StorageService,
     ConfigService,
-    ConfirmationDialogService
+    ConfirmationDialogService,
+    OkDialogService,
+    ExcelService
   ],
   bootstrap: [AppComponent],
   entryComponents: [
     ColumnsDialogComponent,
     ConfirmDialogComponent,
     OrderbyDialogComponent,
-    JoinDialogComponent
+    JoinDialogComponent,
+    OkDialogComponent,
+    ViewerDialogComponent,
+    OptionsDialogComponent,
+    QueryDialogComponent,
+    WhatsnewDialogComponent
   ]
 })
 export class AppModule { }

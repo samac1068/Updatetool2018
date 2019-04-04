@@ -1,12 +1,16 @@
 <div id="divBtnGrp">
-  <button class="standardBtn" id="btnColumns" (click)="openColumnWindow()">Customize Columns</button>
+  <button class="standardBtn" id="btnColumns" (click)="openColumnWindow()" ngbTooltip="Select Custom Columns" placement="bottom">Customize Columns</button>
   <div class="btnGroup">
-    <button class="standardBtn" id="btnJoins" (click)="openJoinWindow()">Joins</button>
-    <button class="standardBtn" id="btnPrimaryKey">Set/Cgh Primary Key</button>
+    <button class="standardBtn" id="btnJoins" (click)="openJoinWindow()" ngbTooltip="Add/Edit Join Statement" placement="bottom">Joins</button>
+    <button class="standardBtn" id="btnPrimaryKey" disabled="true">Set/Cgh Primary Key</button>
   </div>
   <div class="btnGroup">
-    <button class="standardBtn" id="btnOrder" (click)="openOrderByWindow()">Order By</button>
-    <button class="standardBtn" id="btnViewer">View DB Procs/Views/Func</button>
+    <button class="standardBtn" id="btnOrder" (click)="openOrderByWindow()" ngbTooltip="Add/Edit Order By Statement" placement="bottom">Order By</button>
+    <button class="standardBtn" id="btnViewer" (click)="openViewerWindow()" ngbTooltip="View existing Stored Procs, Views, and Function" placement="bottom">Proc/View/Func Viewer</button>
+  </div>
+  <div class="btnGroup">
+    <button id="btnCSV" class="standardBtn" (click)="exportToExcelHandler('csv')" ngbTooltip="Export results to CSV" placement="bottom"><i class="fa fa-file-text-o"></i> CSV</button>
+    <button id="btnExcel" class="standardBtn" (click)="exportToExcelHandler('excel')" ngbTooltip="Export results to XLSX" placement="bottom"><i class="fa fa-file-excel-o"></i> Excel</button>
   </div>
 </div>
 <hr />

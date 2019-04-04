@@ -16,7 +16,7 @@
 
 .divResults {
   height: 40vh;
-  width: 100%;
+  width: 99.5%;
   overflow-y: auto;
   margin-left: 5px;
   margin-right: 5px;
@@ -39,11 +39,12 @@ table {
   text-align: center;
   overflow-wrap: normal;
   font-weight: bold;
-  font-size: 11px;
+  font-size: 12px;
   padding-left: 5px;
   color: #333333;
   font-family: Arial, Helvetica, sans-serif;
-  /* border-right: 1px solid gray; */
+  background-color: #DDD;
+  border-right: 1px solid gray;
 }
 
 th.mat-sort-header-sorted {

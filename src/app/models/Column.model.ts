@@ -14,4 +14,5 @@ export class Column
     orderby: boolean;
     orderbysort: string;
     orderbyindex: number;
+    tableid?: number;
 } 

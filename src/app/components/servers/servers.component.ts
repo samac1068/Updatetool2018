@@ -24,6 +24,8 @@ export class ServersComponent implements OnInit {
   defaultServer: string = "";
   defaultDB: string = "";
 
+  selectedQueryID: number = -1;
+
   constructor(private store: StorageService, private comm: CommService, private data: DataService) { }
 
   ngOnInit() {
@@ -37,13 +39,48 @@ export class ServersComponent implements OnInit {
       this.defaultDB = this.store.getUserValue("database");
 
       //Need to grab a list of the queries for this user
-      this.data.getUserSavedQueries().subscribe(results => {
-        this.queries = results; 
-      });
+      this.queries = [];
+      this.data.getUserSavedQueries().subscribe((results) => {
 
+        for(var i=0; i < results.length; i++) {
+          var q:Query = new Query();
+          q.id = results[i].ID;
+          q.title = this.store.customURLDecoder(results[i].QueryTitle);
+          q.database = results[i].DatabaseName;
+          q.server = results[i].ServerName;
+          q.querybody = this.store.customURLDecoder(results[i].QueryBody);
+  
+          //console.log(q.querybody);
+          
+          this.queries.push(q);
+        };
+      });
+  
       //Now load the selection fields. 
+      this.store.setUserValue('storedqueries', this.queries); 
       this.servers = this.store.system['servers'];
       this.databases = this.store.system['databases'];
     });
+  }
+
+  onServerChanges() {
+    this.store.setSystemValue("server", this.store.returnColByStringKey(this.servers, 'id', this.defaultServer, 'offName'));  //returnColByStringKey
+    this.store.setSystemValue("servername", this.defaultServer);
+  }
+
+  onDatabaseChange() {
+    this.store.setSystemValue("database", this.defaultDB);
+  }
+
+  executeSelectedStoredQuery() {
+    this.comm.addNewTabClicked.emit(this.selectedQueryID);
+  }
+
+  createNewTab() {
+    this.comm.addNewTabClicked.emit();
+  }
+
+  saveCurrentQuery() {
+    this.comm.saveNewQuery.emit();
   }
 }

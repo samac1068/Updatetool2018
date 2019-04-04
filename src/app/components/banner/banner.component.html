@@ -9,9 +9,9 @@
 <div class="userControls">
   Logged in as: <span style="color:#ffff00;" *ngIf="user">{{ user.fname }} {{ user.lname }}</span><br/>
   <div id="buttonGrp">
-    <span class="version">Version 2.0.0</span>
+    <button (click)="displayWhatsNew()" mat-button style="height:20px"><span class="version">{{ version }}</span></button>
     &nbsp;&nbsp;&nbsp;&nbsp;
-    <button class="standardBtn">User Options</button>&nbsp;&nbsp;
-    <button class="standardBtn">Return to Orders</button>
+    <button class="standardBtn" (click)="openOptionsDialog()">User Options</button>&nbsp;&nbsp;
+    <button class="standardBtn" (click)="returnToOrders()">Return to Orders</button>
   </div>
 </div>
