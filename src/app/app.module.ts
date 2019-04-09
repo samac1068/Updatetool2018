@@ -19,7 +19,6 @@ import { DataTablesModule } from 'angular-datatables';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TableFilterPipe } from './services/tablefilter.pipe';
-import { jqxGridComponent } from 'jqwidgets-scripts/jqwidgets-ts/angular_jqxgrid';
 
 // Services
 import { StorageService } from './services/storage.service';
@@ -51,9 +50,12 @@ import { OkDialogComponent } from './dialogs/ok-dialog/ok-dialog.component';
 import { ViewerDialogComponent } from './dialogs/viewer-dialog/viewer-dialog.component';
 import { OptionsDialogComponent } from './dialogs/options-dialog/options-dialog.component';
 import { QueryDialogComponent } from './dialogs/query-dialog/query-dialog.component';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 import { WhatsnewDialogComponent } from './dialogs/whatsnew-dialog/whatsnew-dialog.component';
 
+const appRoutes: Routes = [
+  { path: '', component: AppComponent }
+];
 
 @NgModule({
   declarations: [
@@ -77,7 +79,6 @@ import { WhatsnewDialogComponent } from './dialogs/whatsnew-dialog/whatsnew-dial
     ViewerDialogComponent,
     OptionsDialogComponent,
     QueryDialogComponent,
-    jqxGridComponent,
     WhatsnewDialogComponent
   ],
   imports: [
@@ -87,8 +88,8 @@ import { WhatsnewDialogComponent } from './dialogs/whatsnew-dialog/whatsnew-dial
     ReactiveFormsModule,
     NgbModule,
     DataTablesModule,
-    HttpClientModule
-    ,MatTabsModule,
+    HttpClientModule,
+    MatTabsModule,
     BrowserAnimationsModule,
     MatTableModule,
     MatPaginatorModule,
@@ -99,7 +100,7 @@ import { WhatsnewDialogComponent } from './dialogs/whatsnew-dialog/whatsnew-dial
     DragDropModule,
     MatExpansionModule,
     MatInputModule,
-    RouterModule.forRoot([]),
+    RouterModule.forRoot(appRoutes),
     MatButtonModule
   ],
   providers: [
