@@ -12,14 +12,16 @@ export class Tab {
   table: Table;  // Primary selected table
   columns: Column[];  //List of columns or primary table
 
+  hasPrimKey: boolean;  // Set to true if the table has a primary key already set
+
   active: boolean;
-  
+
   tabtitle: string;
   seltbllist: Table[];  //list of table for the primary database
 
   querystr: string;
   querytitle: string;
-    
+
   //Variabled for standard uses
   databasearr: any[]; //id, name
   tablearr: any[];    //id, name, did

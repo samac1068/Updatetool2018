@@ -1,7 +1,7 @@
 <data>
     <sources>
-        <source type="LOCAL" active="false">http://localhost:64813/UserW/</source>
-        <source type="DEV" active="true">https://demo.mkgcs.com/querytool/UserW/</source>
+        <source type="LOCAL" active="true">http://localhost:64813/UserW/</source>
+        <source type="DEV" active="false">https://mobdemo.mkgcs.com/querytool/UserW/</source>
         <source type="PROD" active="false">https://mobcop.army.mil/querytool/UserW/</source>
     </sources>
 </data>

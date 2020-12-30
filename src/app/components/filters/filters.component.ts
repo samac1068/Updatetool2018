@@ -1,5 +1,5 @@
-import { ConfirmationDialogService } from './../../services/confirm-dialog.service';
-import { CommService } from './../../services/comm.service';
+import { ConfirmationDialogService } from '../../services/confirm-dialog.service';
+import { CommService } from '../../services/comm.service';
 import { Component, OnInit, Input } from '@angular/core';
 import { StorageService } from '../../services/storage.service';
 import { Tab } from 'src/app/models/Tab.model';
@@ -11,7 +11,7 @@ import { Tab } from 'src/app/models/Tab.model';
 })
 export class FiltersComponent implements OnInit {
   @Input() tabinfo: Tab;
-  
+
   rowOpt = [];
   conditionalOpt = [];
   operatorOpt = [];
@@ -31,7 +31,7 @@ export class FiltersComponent implements OnInit {
   colSelected: boolean = false;
 
   addUpdateBtn: string = "Add";
-  
+
   constructor(private store: StorageService, private comm: CommService, private dialogBox: ConfirmationDialogService) { }
 
   ngOnInit() {
@@ -66,7 +66,7 @@ export class FiltersComponent implements OnInit {
         this.curColumnType = this.tabinfo.columns[i].vartype;
         break;
       }
-    }      
+    }
   }
 
   createWID(cnt: number){
@@ -76,7 +76,7 @@ export class FiltersComponent implements OnInit {
 
   buildWhereItem(){
     var whereItemStr = "";
-    
+
     // set the conditional
     this.curCondition = ((this.curCondition != "" && this.curCondition != '-9') ? this.curCondition : "AND");
 
@@ -170,7 +170,7 @@ export class FiltersComponent implements OnInit {
     //Apply button
     if(this.tabinfo.wherearrcomp.length > 0 || this.tabinfo.getcount || this.tabinfo.limitRows)
       this.filterAdded =  true;
-    else 
+    else
       this.filterAdded = false;
 
     // Clear all button
@@ -180,7 +180,8 @@ export class FiltersComponent implements OnInit {
   applyWhereClause(){
     if(this.tabinfo.wherearrcomp.length > 0 || this.tabinfo.getcount || this.tabinfo.limitRows){
       this.addUpdateBtn = "Add";
-      this.comm.runQueryChange.emit();
     }
+
+    this.comm.runQueryChange.emit();
   }
 }

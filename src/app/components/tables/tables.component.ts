@@ -1,4 +1,4 @@
-import { CommService } from './../../services/comm.service';
+import { CommService } from '../../services/comm.service';
 import { DataService } from 'src/app/services/data.service';
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
@@ -7,6 +7,7 @@ import 'datatables.net';
 import 'datatables.net-bs4';
 import { Tab } from 'src/app/models/Tab.model';
 import { Table } from 'src/app/models/Table.model';
+import {StorageService} from '../../services/storage.service';
 
 @Component({
   selector: 'app-tables',
@@ -15,11 +16,11 @@ import { Table } from 'src/app/models/Table.model';
 })
 export class TablesComponent implements OnInit {
 
- @Input() tabinfo: Tab; 
- 
+ @Input() tabinfo: Tab;
+
  searchTerm: string;
 
-  constructor(private data: DataService, private comm: CommService) { }
+  constructor(private data: DataService, private comm: CommService, private store:StorageService) { }
 
   ngOnInit() {
     //Listeners
@@ -27,7 +28,7 @@ export class TablesComponent implements OnInit {
     {
       this.data.getTableDBList(this.tabinfo.server.replace('{0}', this.tabinfo.database), this.tabinfo.database).subscribe((results) => {
         this.processTableList(results);
-      });  
+      });
     }
   }
 
@@ -38,7 +39,7 @@ export class TablesComponent implements OnInit {
     {
         var temp:Table = new Table();
         temp.name = tbl.Name;
-    
+
         tempArr.push(temp);
     }
 
@@ -60,7 +61,7 @@ export class TablesComponent implements OnInit {
 
     for(var i=0; i < tables.length; i++) {
       index++;
-      this.tabinfo.tablearr.push({id: index, name: tables[i].name, dbid: dbid}); 
+      this.tabinfo.tablearr.push({id: index, name: tables[i].name, dbid: dbid});
     }
   }
 
@@ -69,13 +70,13 @@ export class TablesComponent implements OnInit {
     if(this.tabinfo.table == undefined || this.tabinfo.table.name != table.name)
     {
       for (var tbl of this.tabinfo.seltbllist)
-        tbl.isSelected = (tbl.name == table.name) ? true : false;
-  
+        tbl.isSelected = (tbl.name == table.name);
+
       //Update tabinfo before sending
       this.tabinfo.table = table;
-  
+
       //report the table selection
-      this.comm.tableSelected.emit(this.tabinfo);    
+      this.comm.tableSelected.emit(this.tabinfo);
     }
   }
 
@@ -84,9 +85,9 @@ export class TablesComponent implements OnInit {
   }
 
   reloadCurrentData() {
-    if(this.tabinfo.querystr != "" && this.tabinfo.querystr != undefined)
+    if(this.tabinfo.querystr != "" && this.tabinfo.querystr != undefined) {
       this.comm.runQueryChange.emit();
-    else
+    } else
       alert("No query has been created. Request Aborted.");
   }
 }

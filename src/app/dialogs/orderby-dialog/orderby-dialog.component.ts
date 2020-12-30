@@ -1,5 +1,5 @@
-import { StorageService } from './../../services/storage.service';
-import { Column } from './../../models/Column.model';
+import { StorageService } from '../../services/storage.service';
+import { Column } from '../../models/Column.model';
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { Tab } from 'src/app/models/Tab.model';
@@ -19,7 +19,7 @@ export class OrderbyDialogComponent implements OnInit {
 
   ngOnInit() {
     this.selOrderBy = [];
-    
+
     if(this.data.orderarr.length > 0)
       this.selOrderBy = this.data.orderarr;
   }

@@ -47,4 +47,11 @@ export class QueryBtnsComponent implements OnInit {
     else
       alert("You must select table and have results to export data.");
   }
+
+  copyToClipboard() {
+    if(this.tabinfo.table != undefined)
+      this.comm.copyToClipboardClicked.emit();
+    else
+      alert("You must select table and have results to export data.");
+  }
 }

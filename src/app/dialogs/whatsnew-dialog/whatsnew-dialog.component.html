@@ -1,5 +1,5 @@
 <div>
-  <span class="title">What's New</span>
+  <span class="title">What's New - Current Version: {{ curVersion }}</span>
   <button class="standardBtn showright" (click)="processAcknowledge()">{{ buttonTitle }}</button>
   <div class="separator"></div>
   <div class="textbox">
@@ -9,7 +9,7 @@
          <div *ngFor="let k of objectKeys(newchange)">
           <span class="subtitle">{{ k }}</span>
             <ul>
-                <li *ngFor="let new of newchange[k]">{{ new.txt }}</li>
+                <li *ngFor="let n of newchange[k]">{{ n.txt }}</li>
               </ul>
         </div>
     </div>  
@@ -19,7 +19,7 @@
         <div *ngFor="let m of objectKeys(history)">
           <span class="subtitle">{{ m }}</span>
           <ul>
-            <li *ngFor="let old of history[m]">{{ old.txt }}</li>
+            <li *ngFor="let o of history[m]">{{ o.txt }}</li>
           </ul>
         </div>
     </div>

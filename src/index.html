@@ -2,14 +2,17 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Updatetool2018</title>
-  <base href="/">
-
+  <title>Updatetool V2</title>
+  <base href="./">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <script src="assets/common.js"></script>
 </head>
 <body>
-  <app-root></app-root>
+  <script>
+    var token = window.location.href.split("=")[1];
+    var jstr = "<app-root token='" + token + "'>Standby Loading Application</app-root>";
+    document.write(jstr);
+  </script>
 </body>
 </html>

@@ -25,6 +25,7 @@ export class CommService {
     addNewTabClicked = new EventEmitter();    //A new tab has been requested either for the stored query or for the selected server and database
 
     exportToExcelClicked = new EventEmitter();        //When the button is clicked
+    copyToClipboardClicked = new EventEmitter();      //Copy results to the clipboard
 
     tabFault = new EventEmitter();            //Used when there is an issue withe the data updating the wrong tab
 }

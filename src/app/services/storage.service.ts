@@ -12,7 +12,8 @@ export class StorageService {
   private _appKey = 'MMA';
   private _passKey = "4A3F6BD3-61FB-467B-83D0-0EFBAF72AFC4";
   private _connectid = 'MobCopConnectionString';
-  private _inDev: boolean = true;
+  private _appVersion = '2.0.0';
+  private _inDev: boolean = false;
 
   // Public
   tabsArr = [];
@@ -26,7 +27,7 @@ export class StorageService {
     {lbl: '1000 Rows', value: 1000}, {lbl: '2000 Rows', value: 2000}, {lbl:'All Rows', value: -9}];
   conditionals: string[] = ["AND", "OR"];
   operators: string[] = ["LIKE","NOT LIKE","=","<>","!=",">",">=","!>","<","<=","!<","IN","IS NULL","IS NOT NULL"];
-
+  dbNumericals: string[] = ["bit","tinyint","bool","boolean","smallint","mediumint","int","integer","bigint","float","double","decimal","double precision","dec"];
   constructor() { }
 
   // This will allow you to set a specific object for either the tab or the user variables
@@ -64,6 +65,10 @@ export class StorageService {
 
   getConnectID() {
     return this._connectid;
+  }
+
+  getVersion() {
+    return this._appVersion;
   }
 
   isDevMode() {
@@ -115,14 +120,19 @@ export class StorageService {
     str = str.replace(/^\s+|\s+$/gm,'');
     str = str.replace(/ /gi, "%20");
     str = str.replace(/\*/gi, "!");
-    
+
     return str;
   }
 
   customURLDecoder(str: string) {
-    str = str.replace(/%20/gi, " "); 
-    str = str.replace(/\!/gi, "*"); 
-  
+    str = str.replace(/%20/gi, " ");
+    str = str.replace(/\!/gi, "*");
+
     return str;
+  }
+
+  determineValueType(value, vartype)
+  {
+    return (this.dbNumericals.find(x => x == vartype) == undefined) ? "'" + value + "'" : value;
   }
 }

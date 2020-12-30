@@ -1,11 +1,13 @@
-import { ExcelService } from './../../services/excel.service';
-import { DataService } from './../../services/data.service';
-import { StorageService } from './../../services/storage.service';
-import { CommService } from './../../services/comm.service';
+import { ExcelService } from '../../services/excel.service';
+import { DataService } from '../../services/data.service';
+import { StorageService } from '../../services/storage.service';
+import { CommService } from '../../services/comm.service';
 import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
 import { Tab } from 'src/app/models/Tab.model';
 import { MatSort, MatTableDataSource, MatDialog } from '@angular/material';
 import { QueryDialogComponent } from 'src/app/dialogs/query-dialog/query-dialog.component';
+import {UpdaterDialogComponent} from '../../dialogs/updater-dialog/updater-dialog.component';
+import {PrimkeyDialogComponent} from '../../dialogs/primkey-dialog/primkey-dialog.component';
 
 @Component({
   selector: 'app-query-result',
@@ -13,10 +15,10 @@ import { QueryDialogComponent } from 'src/app/dialogs/query-dialog/query-dialog.
   styleUrls: ['./query-result.component.css']
 })
 export class QueryResultComponent implements OnInit {
-  
+
   @Input() tabinfo: Tab;
   @ViewChild(MatSort) sort: MatSort;
-  
+
   colHeader: string[];
   rtnResults: any[];
   dataSource: any;
@@ -26,7 +28,7 @@ export class QueryResultComponent implements OnInit {
   ngOnInit() {
     //Listner
     this.comm.tableSelected.subscribe(() => {
-      this.newTableSelected();  
+      this.newTableSelected();
     });
 
     //Change to the query has happened so run the query
@@ -45,14 +47,18 @@ export class QueryResultComponent implements OnInit {
     this.comm.saveNewQuery.subscribe(() => {
       this.saveCurrentQuery();
     });
+
+    this.comm.copyToClipboardClicked.subscribe(() => {
+
+    });
   }
 
   newTableSelected(){
-    this.initilizeTheQuery();
+    this.initializeTheQuery();
     this.constructSQLString();
   }
 
-  initilizeTheQuery() {
+  initializeTheQuery() {
     this.tabinfo.colfilterarr = ["*"];
     this.tabinfo.wherearr = [];
     this.tabinfo.wherearrcomp = []; //{wid: 0, str: "", condition: "", type: "", name: "", operator: "", value: ""}
@@ -65,61 +71,63 @@ export class QueryResultComponent implements OnInit {
   }
 
   constructSQLString() {
+    this.tabinfo.querystr = "";
+
     //Build the string exactly like the web service
-    var strSQL = "SELECT ";
+    let strSQL = "SELECT ";
 
     //Build the return
     if(this.tabinfo.getcount)
       strSQL += "COUNT (*) AS [Count] FROM ";
     else if (parseInt(this.tabinfo.selectcnt) > 0)
       strSQL += "TOP " + this.tabinfo.selectcnt + " ";
-    else if (this.tabinfo.wherearrcomp.length == 0 && this.tabinfo.colfilterarr[0] == "*" && parseInt(this.tabinfo.selectcnt) != -9) 
+    else if (this.tabinfo.wherearrcomp.length == 0 && this.tabinfo.colfilterarr[0] == "*" && parseInt(this.tabinfo.selectcnt) != -9)
       strSQL += "TOP 10 ";
-      
+
     //What columns do we want
     if(this.tabinfo.colfilterarr[0] == "*" || parseInt(this.tabinfo.selectcnt) == -9)
       strSQL += "* ";
     else
       strSQL += this.tabinfo.colfilterarr.join() + " ";
-    
+
     //Include the FROM
     strSQL += "FROM ";
-    
+
     //Add the database and table info
     strSQL += "[" + this.tabinfo.database + "]..[" + this.tabinfo.table.name + "] ";
 
     //Add Join statement
     if(this.tabinfo.joinarr.length > 0)
       strSQL += this.constructJoin();
-    
+
     //Where Clause
     if(this.tabinfo.wherearrcomp.length > 0)
       strSQL += this.constructWhereClause();
-    
-    // Order By  
+
+    // Order By
     if(this.tabinfo.orderarr.length > 0)
       strSQL += this.constructOrderBy();
-      
-    //Display the information  
+
+    //Display the information
     this.tabinfo.querystr = strSQL;
-    
+
     //Run the string based on this information (it won't be a direct run)
     this.executeSQL();
   }
 
   constructWhereClause(){
     //Manually join the where clause adding in the appropriate conditioning statements
-    var wStr: string = "WHERE ";
-    for(var i = 0; i < this.tabinfo.wherearrcomp.length; i++){
-      var row: any = this.tabinfo.wherearrcomp[i];
+    let wStr: string = "WHERE ";
+    for(let i = 0; i < this.tabinfo.wherearrcomp.length; i++){
+      let row: any = this.tabinfo.wherearrcomp[i];
 
-      //Add in the condition for the second + where item  
+      //Add in the condition for the second + where item
       if(i > 0)
         wStr += " " + row.condition + " ";
 
       //Add the column and opeator
       wStr += row.name + " " + row.operator + " ";
-      
+
       //Add the value (quote if type requires)
       switch (row.type) {
         case "char":
@@ -149,12 +157,12 @@ export class QueryResultComponent implements OnInit {
   }
 
   constructOrderBy() {
-    var oStr: string = "ORDER BY ";
+    let oStr: string = "ORDER BY ";
 
-    for (var i = 0; i < this.tabinfo.orderarr.length; i++){
+    for (let i = 0; i < this.tabinfo.orderarr.length; i++){
       if(i > 0)
         oStr += ", ";
-      
+
       oStr += this.tabinfo.orderarr[i].name + " " + this.tabinfo.orderarr[i].sort
     }
 
@@ -162,9 +170,9 @@ export class QueryResultComponent implements OnInit {
   }
 
   constructJoin() {
-    var jStr: string = "";
+    let jStr: string = "";
 
-    for (var i = 0; i < this.tabinfo.joinarr.length; i++){
+    for (let i = 0; i < this.tabinfo.joinarr.length; i++){
       jStr += " " + this.tabinfo.joinarr[i].joinclausestr;
     }
 
@@ -173,13 +181,13 @@ export class QueryResultComponent implements OnInit {
 
   executeSQL(){
     //Run out and get what we need
-    var col: string = (this.tabinfo.colfilterarr[0] == "*") ? "" : this.tabinfo.colfilterarr.join();    //Separated by comma
-    var where: string = (this.tabinfo.wherearrcomp.length > 0) ? this.constructWhereClause() : "";      // Separated by a space
-    var join: string = (this.tabinfo.joinarr.length > 0) ? this.constructJoin() : "";                   //Separated by a space
-    var order: string = (this.tabinfo.orderarr.length > 0) ? this.constructOrderBy() : "";              //Separated by a comma
+    let col: string = (this.tabinfo.colfilterarr[0] == "*") ? "" : this.tabinfo.colfilterarr.join();    //Separated by comma
+    let where: string = (this.tabinfo.wherearrcomp.length > 0) ? this.constructWhereClause() : "";      // Separated by a space
+    let join: string = (this.tabinfo.joinarr.length > 0) ? this.constructJoin() : "";                   //Separated by a space
+    let order: string = (this.tabinfo.orderarr.length > 0) ? this.constructOrderBy() : "";              //Separated by a comma
 
-    this.data.getQueryData(this.tabinfo.server.replace('{0}', this.tabinfo.database), this.tabinfo.database, this.tabinfo.table.name, 
-    (col.length == 0) ? '0' : col, (where.length == 0) ? '0' : where, (join.length == 0) ? '0' : join, (order.length == 0) ? '0' : order, 
+    this.data.getQueryData(this.tabinfo.server.replace('{0}', this.tabinfo.database), this.tabinfo.database, this.tabinfo.table.name,
+    (col.length == 0) ? '0' : col, (where.length == 0) ? '0' : where, (join.length == 0) ? '0' : join, (order.length == 0) ? '0' : order,
       this.tabinfo.getcount, this.tabinfo.limitRows, this.tabinfo.selectcnt).subscribe((results) => {
         this.processReturnedData(results);
       });
@@ -201,7 +209,7 @@ export class QueryResultComponent implements OnInit {
     //Need to collect the column headers first
     this.colHeader = [];
 
-    for(var key in results[0]){
+    for(let key in results[0]){
       this.colHeader.push(key);
     }
 
@@ -219,8 +227,8 @@ export class QueryResultComponent implements OnInit {
     if(this.tabinfo.isstoredquery)
       alert("This query is already saved.");
     else {
-      const dialogRef = this.dialog.open(QueryDialogComponent, {width: '500px', height: '175px', autoFocus: true, data: this.tabinfo });
-      dialogRef.afterClosed().subscribe(() => {
+      const dialogQuery = this.dialog.open(QueryDialogComponent, {width: '500px', height: '175px', autoFocus: true, data: this.tabinfo });
+      dialogQuery.afterClosed().subscribe(() => {
         if(this.tabinfo.querytitle != undefined) {
           this.data.storeNewQuery(this.tabinfo.querytitle, this.tabinfo.querystr, this.tabinfo.server, this.tabinfo.database, this.store.getUserValue("userid"))
           .subscribe(() => {
@@ -229,5 +237,69 @@ export class QueryResultComponent implements OnInit {
         }
       });
     }
+  }
+
+  cellClickedHandler(col, value) {
+    let cell = {col: col, value: value };
+
+    // Store the column that has been selected for modification
+    this.tabinfo.table["selectedColumn"] = col;
+    this.tabinfo.table["curvalue"] = value;
+
+    // Identify the appropriate column to be modified
+    let obj = this.tabinfo.availcolarr.find(x => col === x.columnname);
+    obj.colSelected = true;
+
+    //Does this table have a primary key (is required)
+    if(!this.tabinfo.hasPrimKey) {
+      // Doesn't have a primary key, so user must select a unique identifier to be used in the where clause
+      let tabdata: any = {col: col, tabinfo: this.tabinfo };
+      const dialogPrimeKey = this.dialog.open(PrimkeyDialogComponent, { width: '350px', height: '200px', autoFocus: true, data: tabdata });
+      dialogPrimeKey.afterClosed().subscribe((id) => {
+
+        if(id != -1){
+          // Need to update our local variable with the information
+          let seltab = this.tabinfo.availcolarr.find(x => x.columnid == id);
+          if(seltab != undefined) {
+            seltab.primarykey = true;
+            this.tabinfo.hasPrimKey = true;
+            this.processCellClicked(obj);
+          }
+        } else
+          alert("Unable to modify the selected value without a primary key. Operation canceled");
+      });
+    } else
+        this.processCellClicked(obj);
+  }
+
+  processCellClicked(obj){
+    if(!obj.primarykey) {
+      this.tabinfo.table["valueLimiter"] = this.generateLimiter(this.tabinfo.table["selectedColumn"]);
+
+      const dialogProcessChg = this.dialog.open(UpdaterDialogComponent, { width: '385px', height: '300px', autoFocus: true, data: this.tabinfo });
+      dialogProcessChg.afterClosed()
+        .subscribe((rtn) => {
+        if (rtn.table["setvalue"] != undefined){
+          //Value has been set to something new, so let's save it (//this.comm.runQueryChange.emit();)
+          console.log(this.tabinfo, rtn);
+          let selcol = this.tabinfo.availcolarr.find(x => x.columnname == this.tabinfo.table["selectedColumn"]);
+          let updatekey = "SET [" + selcol.columnname + "] = " + this.store.determineValueType(this.tabinfo.table["setvalue"], selcol.vartype) + " WHERE " + this.tabinfo.table["valueLimiter"];
+
+          // Signal the DB to update the information
+          this.data.updateRowInfo(this.tabinfo.server.replace('{0}', this.tabinfo.database), this.tabinfo.database, this.tabinfo.table["name"], updatekey, this.tabinfo.wherearr.length > 0 ? this.tabinfo.wherearr.join(' and ') : "0")
+            .subscribe((result) => {
+            this.comm.runQueryChange.emit();
+            alert("Record updated.");
+          });
+        }
+      });
+    }else
+      alert("This column is a primary key and cannot be changed.");
+  }
+
+  generateLimiter(selectedcol) {
+    // Based on the selected column, come up with the where clause to include the primary key value
+    let primecol = this.tabinfo.availcolarr.find(x => x.primarykey == true);
+    return primecol.columnname + " = " + this.store.determineValueType(this.dataSource.filteredData.find(x => x[selectedcol] == this.tabinfo.table["curvalue"])[primecol.columnname], primecol.vartype);
   }
 }

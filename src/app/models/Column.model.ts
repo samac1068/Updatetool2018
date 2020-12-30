@@ -1,5 +1,5 @@
 
-export class Column 
+export class Column
 {
     tablename: string;
     columnid: number;
@@ -15,4 +15,5 @@ export class Column
     orderbysort: string;
     orderbyindex: number;
     tableid?: number;
-} 
+    colSelected: boolean;
+}

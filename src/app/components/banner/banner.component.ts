@@ -1,6 +1,6 @@
-import { Build } from './../../models/Build.model';
-import { CommService } from './../../services/comm.service';
-import { DataService } from './../../services/data.service';
+import { Build } from '../../models/Build.model';
+import { CommService } from '../../services/comm.service';
+import { DataService } from '../../services/data.service';
 import { Component, OnInit, Inject } from '@angular/core';
 
 import { User } from '../../models/User.model';
@@ -26,7 +26,7 @@ export class BannerComponent implements OnInit {
     this.comm.userInfoLoaded.subscribe(() => {
       this.user = this.store.getUser();
       this.setupVersion();
-      this.confirmDisplayWhatsNew();
+      //this.confirmDisplayWhatsNew();
     });
 
     this.comm.noToolUserInfoFound.subscribe(() => {
@@ -59,18 +59,18 @@ export class BannerComponent implements OnInit {
 
   setupVersion() {
     this.build = this.store.getSystemValue("build");
-    this.version = "Version " + this.build[0].BuildVersion;
+    this.version = "Version " + this.store.getVersion();
   }
 
   confirmDisplayWhatsNew() {
-    if(this.build[0].BuildVersion > this.user.lastversion)
+    if((this.store.getVersion() > this.user.lastversion) && this.build[0].BuildVersion == this.store.getVersion())
       this.displayWhatsNew();
   }
 
   displayWhatsNew() {
     //Display the What's new page if there is something new since the last time it was checked.
-    const dialogRef = this.dialog.open(WhatsnewDialogComponent, { width: '700px', height: '550px', autoFocus: true, data: this.user });
-    dialogRef.afterClosed().subscribe((u) => {
+    const dialogBannerRef = this.dialog.open(WhatsnewDialogComponent, { width: '700px', height: '550px', autoFocus: true, data: this.user });
+    dialogBannerRef.afterClosed().subscribe((u) => {
       this.user = u;
     });
   }

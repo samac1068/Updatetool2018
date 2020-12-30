@@ -17,6 +17,7 @@ export class WhatsnewDialogComponent implements OnInit {
   classheight: string;
   latestBuild: string;
   buttonTitle: string = "Acknowledge";
+  curVersion: string = "";
 
   constructor(public dialogRef: MatDialogRef<WhatsnewDialogComponent>, @Inject(MAT_DIALOG_DATA) public user: User, private store: StorageService,
   private data: DataService) { }
@@ -26,7 +27,8 @@ export class WhatsnewDialogComponent implements OnInit {
     var changes: any = this.store.getSystemValue('build');
 
     this.latestBuild = changes[0].BuildVersion;
-    
+    this.curVersion = this.store.getVersion();
+
     for(var i=0; i < changes.length; i++){
        if(changes[i].BuildVersion > this.user.lastversion){
         if(this.newchange[changes[i].BuildVersion] == undefined)

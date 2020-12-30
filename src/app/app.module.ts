@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import {NgModule} from '@angular/core';
 
 import { AppComponent } from './app.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
@@ -50,12 +50,11 @@ import { OkDialogComponent } from './dialogs/ok-dialog/ok-dialog.component';
 import { ViewerDialogComponent } from './dialogs/viewer-dialog/viewer-dialog.component';
 import { OptionsDialogComponent } from './dialogs/options-dialog/options-dialog.component';
 import { QueryDialogComponent } from './dialogs/query-dialog/query-dialog.component';
-import { RouterModule, Routes } from '@angular/router';
 import { WhatsnewDialogComponent } from './dialogs/whatsnew-dialog/whatsnew-dialog.component';
+import { CopyTextDirective } from './services/copy-text.directive';
+import { UpdaterDialogComponent } from './dialogs/updater-dialog/updater-dialog.component';
+import { PrimkeyDialogComponent } from './dialogs/primkey-dialog/primkey-dialog.component';
 
-const appRoutes: Routes = [
-  { path: '', component: AppComponent }
-];
 
 @NgModule({
   declarations: [
@@ -79,7 +78,10 @@ const appRoutes: Routes = [
     ViewerDialogComponent,
     OptionsDialogComponent,
     QueryDialogComponent,
-    WhatsnewDialogComponent
+    WhatsnewDialogComponent,
+    CopyTextDirective,
+    UpdaterDialogComponent,
+    PrimkeyDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -100,7 +102,6 @@ const appRoutes: Routes = [
     DragDropModule,
     MatExpansionModule,
     MatInputModule,
-    RouterModule.forRoot(appRoutes),
     MatButtonModule
   ],
   providers: [
@@ -121,7 +122,9 @@ const appRoutes: Routes = [
     ViewerDialogComponent,
     OptionsDialogComponent,
     QueryDialogComponent,
-    WhatsnewDialogComponent
+    WhatsnewDialogComponent,
+    UpdaterDialogComponent,
+    PrimkeyDialogComponent
   ]
 })
 export class AppModule { }

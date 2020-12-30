@@ -1,12 +1,13 @@
-import { JoinDialogComponent } from './../../dialogs/join-dialog/join-dialog.component';
-import { CommService } from './../../services/comm.service';
-import { DataService } from './../../services/data.service';
-import { StorageService } from './../../services/storage.service';
-import { Tab } from './../../models/Tab.model';
+import { JoinDialogComponent } from '../../dialogs/join-dialog/join-dialog.component';
+import { CommService } from '../../services/comm.service';
+import { DataService } from '../../services/data.service';
+import { StorageService } from '../../services/storage.service';
+import { Tab } from '../../models/Tab.model';
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { ColumnsDialogComponent } from '../../../app/dialogs/columns-dialog/columns-dialog.component';
 import { Column } from '../../models/Column.model';
+
+import { ColumnsDialogComponent } from '../../dialogs/columns-dialog/columns-dialog.component';
 import { OrderbyDialogComponent } from 'src/app/dialogs/orderby-dialog/orderby-dialog.component';
 import { ViewerDialogComponent } from 'src/app/dialogs/viewer-dialog/viewer-dialog.component';
 
@@ -19,7 +20,7 @@ export class TabComponent implements OnInit {
 
   @Input() tabinfo: Tab;
   tabid: string = "";
-  
+
   constructor(private store: StorageService, private data: DataService, private comm: CommService, public dialog: MatDialog) { }
 
   ngOnInit() {
@@ -28,10 +29,11 @@ export class TabComponent implements OnInit {
       //Need to pull all of the columns for the selected table
       this.data.getTableProperties(this.tabinfo.server.replace('{0}', this.tabinfo.database), this.tabinfo.database, this.tabinfo.table.name).subscribe((results) => {
         this.tabinfo.columns = [];
+        this.tabinfo.availcolarr = [];
 
         for(let row of results)
         {
-          var r: Column = new Column(); 
+          var r: Column = new Column();
           r.tablename = row.TableName;
           r.columnid = row.ColumnID;
           r.columnname = row.ColumnName;
@@ -40,21 +42,19 @@ export class TabComponent implements OnInit {
           r.primarykey = row.PrimaryKey;
           r.precise = row.Precise;
           r.scale = row.Scale;
-          r.charfulllength = row.CharFullLength; 
-          
-          if(this.tabinfo.colfilterarr.indexOf(r.columnname) > -1)
-            r.selected = true;
-          else
-            r.selected = false;
-            
+          r.charfulllength = row.CharFullLength;
+          r.selected = this.tabinfo.colfilterarr.indexOf(r.columnname) > -1;
+          r.colSelected = null;
+
           this.tabinfo.columns.push(r);
           this.tabinfo.availcolarr.push(r);
+          if(r.primarykey) this.tabinfo.hasPrimKey = true;
         }
       });
 
       this.comm.columnsUpdated.emit(this.tabinfo);
     });
-    
+
     //Custom Column button selected
     this.comm.columnBtnClicked.subscribe(() => {
       if(this.tabinfo === this.store.selectedTab) {
