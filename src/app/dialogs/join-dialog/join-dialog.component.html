@@ -6,9 +6,9 @@
       <div class="col-md-10 header">Join Statement</div>
     </div>
     <div class="content">
-      <div class="row" *ngFor="let row of joinclausearr">  
-          <div class="col-md-1 data" style="text-align: center"><a href="#" (click)="removeJoinItem(row.jid)"><i class="fa fa-trash" aria-hidden="true"></i></a></div>
-          <div class="col-md-1 data" style="text-align: center"><a href="#" (click)="editJoinItem(row.jid)"><i class="fa fa-pencil" aria-hidden="true"></i></a></div>
+      <div class="row" *ngFor="let row of joinclausearr">
+          <div class="col-md-1 data" style="text-align: center"><a (click)="removeJoinItem(row.jid)"><i class="fa fa-trash" aria-hidden="true"></i></a></div>
+          <div class="col-md-1 data" style="text-align: center"><a (click)="editJoinItem(row.jid)"><i class="fa fa-pencil" aria-hidden="true"></i></a></div>
           <div class="col-md-10 data statementtext">{{ row.joinclausestr }}</div>
       </div>
     </div>
@@ -51,7 +51,7 @@
         <div class="pushcenter">
           <mat-form-field style="width: 80px;">
             <mat-label>Join Type:</mat-label>
-            <mat-select [(ngModel)]="tjtype"> 
+            <mat-select [(ngModel)]="tjtype">
               <mat-option value="JOIN">INNER</mat-option>
               <mat-option value="LEFT JOIN">LEFT</mat-option>
               <mat-option value="RIGHT JOIN">RIGHT</mat-option>
@@ -68,7 +68,7 @@
             </mat-select>
           </mat-form-field>
         </div>
-        <button class="standardBtn" style="margin-top: 30px; margin-left: -2px" (click)="addJoin()" 
+        <button class="standardBtn" style="margin-top: 30px; margin-left: -2px" (click)="addJoin()"
               [disabled]="tleftcolumn.length  == 0 || trightcolumn.length == 0">Add</button>
       </div>
 

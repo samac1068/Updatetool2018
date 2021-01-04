@@ -28,7 +28,7 @@ export class ConfigService {
     const serverList = [];
 
     for (let i = 0; i < servers.length; i++) {
-      this.server = {id: servers[i].getAttribute('id'), offName: servers[i].getAttribute('offName')}   
+      this.server = {id: servers[i].getAttribute('id'), offName: servers[i].getAttribute('offName')}
       serverList.push(this.server);
     }
 
@@ -45,7 +45,7 @@ export class ConfigService {
   }
 
   //Returns a single server name and path currently being used
-  getSystemConfig() {
+ /* getSystemConfig() {
     const xml = new XMLHttpRequest();
     xml.open('GET', this.systemUrl, false);
     xml.send();
@@ -57,5 +57,5 @@ export class ConfigService {
         return {type: sys[i].getAttribute('type'), path: sys[i].firstChild.nodeValue };
       }
     }
-  }
+  }*/
 }

@@ -1,5 +1,5 @@
-import { User } from './../../models/User.model';
-import { CommService } from './../../services/comm.service';
+import { User } from '../../models/User.model';
+import { CommService } from '../../services/comm.service';
 import { Component, OnInit } from '@angular/core';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
@@ -33,7 +33,7 @@ export class ServersComponent implements OnInit {
     this.comm.userInfoLoaded.subscribe(() => {
       //Now we can load and set the default selections for this user
       this.user = this.store.getUser();
-     
+
       //set default selections
       this.defaultServer = this.store.getUserValue("servername");
       this.defaultDB = this.store.getUserValue("database");
@@ -49,15 +49,15 @@ export class ServersComponent implements OnInit {
           q.database = results[i].DatabaseName;
           q.server = results[i].ServerName;
           q.querybody = this.store.customURLDecoder(results[i].QueryBody);
-  
+
           //console.log(q.querybody);
-          
+
           this.queries.push(q);
         };
       });
-  
-      //Now load the selection fields. 
-      this.store.setUserValue('storedqueries', this.queries); 
+
+      //Now load the selection fields.
+      this.store.setUserValue('storedqueries', this.queries);
       this.servers = this.store.system['servers'];
       this.databases = this.store.system['databases'];
     });

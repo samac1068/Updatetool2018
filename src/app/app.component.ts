@@ -5,6 +5,9 @@ import { ConfigService } from './services/config.service';
 import { StorageService } from './services/storage.service';
 import { DataService } from './services/data.service';
 
+// using the new environment files to determine the dev mode and the url to the api
+import {environment} from '../environments/environment';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -17,7 +20,7 @@ export class AppComponent implements OnInit {
   urlToken: any = "";
 
   constructor(private config: ConfigService, private store: StorageService, private data: DataService, private comm: CommService, elRef: ElementRef) {
-    this.urlToken = elRef.nativeElement.getAttribute('token')
+    this.urlToken = elRef.nativeElement.getAttribute('token');
   }
 
   ngOnInit() {
@@ -25,19 +28,33 @@ export class AppComponent implements OnInit {
     this.getServerConfig();
     this.identifyLocale();
 
+    console.log("apipath is ", environment.apipath);
+    console.log("devmode is ", environment.usedev);
+
     // Get and manage the user access token
     if(this.store.isDevMode()) {
-      if (this.urlToken == "") {
+      // Manually set the necessary variables
+
+      this.store.setUserValue("token", null);
+      this.store.setUserValue("username", 'sean.mcgill');
+      this.store.setUserValue("initalapp", 'UPDATETOOL');
+      this.store.setUserValue("tokencreatedate", null);
+      this.getUserInformation();
+
+      // If we can get this working in the future, cool otherwise use the lines above
+      // Problem is I could never get the GUID string to store in the urlToken variable.
+      /*TODO*/
+      /*if (this.urlToken == "" || this.urlToken == "undefined") {
         this.data.getLocalToken("sean.mcgill")  // Generate a token at this point and introduce it into the application.
           .subscribe(result => {
-            this.urlToken = result["token"].GUID.toString();
+            this.urlToken += result["token"];
             console.log(this.urlToken);
           });
-      }
+      }*/
+    } else {
+      // Process the token sent to the app component
+      this.continueInitialization();
     }
-
-    // Process the token sent to the app component
-    this.continueInitialization();
   }
 
   continueInitialization(){
@@ -51,7 +68,9 @@ export class AppComponent implements OnInit {
   }
 
   getSystemConfig() {
-    const results = this.config.getSystemConfig();
+    //Collect the information from the environments files, based on the specific build
+    this.store.setDevMode(environment.usedev);
+    const results = {type: environment.apitype, path: environment.apipath }
     this.store.setSystemValue('webservice', results);
     this.store.setSystemValue('window', { minHeight: this.minHeightDefault, minWidth: this.minWidthDefault });
   }
@@ -69,13 +88,14 @@ export class AppComponent implements OnInit {
   }
 
   identifyLocale(){
-    switch(this.store.system['webservice']['type'])
+    switch(this.store.system['webservice']['type'].toUpperCase())
     {
         case 'LOCAL':
           this.store.system['webservice']['locale'] = 'herndon';
           console.log("local webservice - devmode is " + this.store.isDevMode());
           break;
         case 'DEV':
+        case 'DEMO':
           this.store.system['webservice']['locale'] = 'development';
           console.log('development (herndon) webservice - devmode is ' + this.store.isDevMode());
           break;

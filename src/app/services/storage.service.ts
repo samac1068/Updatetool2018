@@ -47,6 +47,10 @@ export class StorageService {
     return this.user[section];
   }
 
+  setDevMode(value: boolean) {
+    this._inDev = value;
+  }
+
   getSystemValue(section: string): any {
     return this.system[section];
   }

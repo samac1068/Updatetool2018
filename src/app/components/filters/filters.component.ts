@@ -60,7 +60,7 @@ export class FiltersComponent implements OnInit {
 
   determineType(){
     this.colSelected = (this.curColumn != "-9");
-    for(var i = 0; i < this.tabinfo.columns.length; i++)
+    for(let i = 0; i < this.tabinfo.columns.length; i++)
     {
       if(this.tabinfo.columns[i].columnname.toLowerCase() == this.curColumn.toLowerCase()){
         this.curColumnType = this.tabinfo.columns[i].vartype;
@@ -70,12 +70,12 @@ export class FiltersComponent implements OnInit {
   }
 
   createWID(cnt: number){
-    var d: any = new Date();
+    let d: any = new Date();
     return Math.floor((Math.random() * (100 + cnt)) + 1) + (d.getHours() + d.getMinutes() + d.getSeconds());
   }
 
   buildWhereItem(){
-    var whereItemStr = "";
+    let whereItemStr = "";
 
     // set the conditional
     this.curCondition = ((this.curCondition != "" && this.curCondition != '-9') ? this.curCondition : "AND");
@@ -128,9 +128,10 @@ export class FiltersComponent implements OnInit {
   }
 
   removeAllWhereItems(){
-      this.tabinfo.wherearrcomp= [];
-      this.resetFilterFields();
-      this.evaluateBtnStatus();
+    this.tabinfo.wherearrcomp= [];
+    this.resetFilterFields();
+    this.evaluateBtnStatus();
+    this.signalExecuteQuery();
   }
 
   removeWhereItem(wid: number){
@@ -143,7 +144,7 @@ export class FiltersComponent implements OnInit {
   }
 
   editWhereItem(wid: number){
-    var i: number = this.findIndexByWID(wid);
+    let i: number = this.findIndexByWID(wid);
 
     //We want to reload the information into the cur fields
     this.curCondition = this.tabinfo.wherearrcomp[i].condition;
@@ -159,7 +160,7 @@ export class FiltersComponent implements OnInit {
   }
 
   findIndexByWID(wid: number){
-    for(var k=0; k < this.tabinfo.wherearrcomp.length; k++){
+    for(let k=0; k < this.tabinfo.wherearrcomp.length; k++){
       if(this.tabinfo.wherearrcomp[k].wid == wid){
         return k;
       }
@@ -168,10 +169,7 @@ export class FiltersComponent implements OnInit {
 
   evaluateBtnStatus(){
     //Apply button
-    if(this.tabinfo.wherearrcomp.length > 0 || this.tabinfo.getcount || this.tabinfo.limitRows)
-      this.filterAdded =  true;
-    else
-      this.filterAdded = false;
+    this.filterAdded = this.tabinfo.wherearrcomp.length > 0 || this.tabinfo.getcount || this.tabinfo.limitRows;
 
     // Clear all button
     this.hasWhere = (this.tabinfo.wherearrcomp.length > 0);
@@ -182,6 +180,10 @@ export class FiltersComponent implements OnInit {
       this.addUpdateBtn = "Add";
     }
 
+    this.signalExecuteQuery();
+  }
+
+  signalExecuteQuery() {
     this.comm.runQueryChange.emit();
   }
 }

@@ -1,4 +1,4 @@
-import { CommService } from './../../services/comm.service';
+import { CommService } from '../../services/comm.service';
 import { Component, OnInit, Input } from '@angular/core';
 import { Tab } from 'src/app/models/Tab.model';
 
@@ -8,7 +8,7 @@ import { Tab } from 'src/app/models/Tab.model';
   styleUrls: ['./query-btns.component.css']
 })
 export class QueryBtnsComponent implements OnInit {
-  
+
   @Input() tabinfo: Tab;
   constructor(private comm: CommService) { }
 

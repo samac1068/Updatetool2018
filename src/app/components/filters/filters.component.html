@@ -17,15 +17,15 @@
           <div class="col-sm-8 header">Statement</div>
         </div>
       </div>
-    
+
       <!-- Body Div -->
       <div class="container">
-        <div class="row" *ngFor="let row of tabinfo.wherearrcomp">  
+        <div class="row" *ngFor="let row of tabinfo.wherearrcomp">
           <div class="col-sm-2 data" style="text-align: center">
-            <a href="#" (click)="removeWhereItem(row.wid)"><i class="fa fa-trash" aria-hidden="true"></i></a>
+            <a (click)="removeWhereItem(row.wid)"><i class="fa fa-trash" aria-hidden="true"></i></a>
           </div>
           <div class="col-sm-2 data" style="text-align: center">
-            <a href="#" (click)="editWhereItem(row.wid)"><i class="fa fa-pencil" aria-hidden="true"></i></a>
+            <a (click)="editWhereItem(row.wid)"><i class="fa fa-pencil" aria-hidden="true"></i></a>
           </div>
           <div class="col-sm-8 data">
             {{ row.str }}
@@ -58,14 +58,14 @@
     <div [hidden]="curColumnType == 'bit'" >
       <input type="text" id="txtFilterText" [(ngModel)]="curInput" [disabled]="!colSelected">
     </div>
-    
+
     <div [hidden]="curColumnType != 'bit'">
       <select id="txtBitInput" [(ngModel)]="curInput">
         <option value="1">True</option>
         <option value="0">False</option>
       </select>
     </div>
-    
+
     <div style="margin-top: 10px; margin-left: -10px; width:97%;">
       <div class="row">
         <div class="col-sm-4"><button class="standardBtn" style="width: 100px" (click)="removeAllWhereItems()" [disabled]="!hasWhere">Clear All</button></div>
