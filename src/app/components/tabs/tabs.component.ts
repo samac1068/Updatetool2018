@@ -22,7 +22,7 @@ export class TabsComponent implements OnInit {
       if(this.store.getUserValue("server") != ""){
         this.store.setSystemValue('server', this.store.getUserValue("server"));
         this.store.setSystemValue('servername', this.store.getUserValue("servername"));
-        this.store.setSystemValue('database', this.store.getUserValue("database"));  
+        this.store.setSystemValue('database', this.store.getUserValue("database"));
         this.addTab();
       }
     });
@@ -30,7 +30,7 @@ export class TabsComponent implements OnInit {
     this.comm.addNewTabClicked.subscribe((data) => {
       if(data != undefined) {
         this.addTab(data);
-      } else 
+      } else
         this.addTab();
     });
   }
@@ -44,7 +44,7 @@ export class TabsComponent implements OnInit {
     if(queryid != undefined) {
       //The user has selected a stored query, so feed the info.
       var queries: any[] = this.store.getUserValue('storedqueries');
-      
+
       for(var i=0; i < queries.length; i++) {
         if(queries[i].id === parseInt(queryid))
         {
@@ -60,26 +60,28 @@ export class TabsComponent implements OnInit {
     } else {
       tabCont.server = this.store.getSystemValue("server");
       tabCont.servername = this.store.getSystemValue("servername");
-      tabCont.database = this.store.getSystemValue("database");
+
+      // Determine which database and make sure to use the alternate over the default
+      tabCont.database = this.store.getSelectedDBName(this.store.getSystemValue("database"));
     }
-    
+
     tabCont.databasearr = [];
     tabCont.databasearr.push({id: tabCont.databasearr.length + 1, name: tabCont.database });
     tabCont.tabtitle = tabCont.servername.toUpperCase() + " - " + tabCont.database.toUpperCase() + " ";
     tabCont.tablearr = [];
     tabCont.availcolarr = [];
-    
+
     tabCont.active = false;
-    
+
     this.tabs.push(tabCont);
-    
+
     this.selectTab(this.tabs[this.tabs.length - 1]);
    }
 
    selectTab(tab: Tab) {
     for(var i =0; i < this.tabs.length; i++)
       this.tabs[i].active = false;
-  
+
     tab.active = true;
 
     this.selectedTab = tab.tabindex;

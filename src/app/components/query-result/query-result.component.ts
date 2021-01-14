@@ -20,7 +20,7 @@ export class QueryResultComponent implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
 
   colHeader: string[];
-  rtnResults: any[];
+  //rtnResults: any[];
   dataSource: any;
 
   constructor(private comm: CommService, private data: DataService, private store: StorageService, private excel: ExcelService, public dialog: MatDialog) { }
@@ -102,7 +102,7 @@ export class QueryResultComponent implements OnInit {
 
     //Where Clause
     if(this.tabinfo.wherearrcomp.length > 0)
-      strSQL += this.constructWhereClause();
+      strSQL += this.constructWhereClause(true);
 
     // Order By
     if(this.tabinfo.orderarr.length > 0)
@@ -115,7 +115,7 @@ export class QueryResultComponent implements OnInit {
     this.executeSQL();
   }
 
-  constructWhereClause(){
+  constructWhereClause(forDisplay: boolean){
     //Manually join the where clause adding in the appropriate conditioning statements
     let wStr: string = "WHERE ";
     for(let i = 0; i < this.tabinfo.wherearrcomp.length; i++){
@@ -126,7 +126,10 @@ export class QueryResultComponent implements OnInit {
         wStr += " " + row.condition + " ";
 
       //Add the column and opeator
-      wStr += row.name + " " + row.operator + " ";
+      if(forDisplay)
+        wStr += row.name + " " + row.operator + " ";
+      else
+        wStr += row.name + " {" + this.store.operators.indexOf(row.operator) + "} ";
 
       //Add the value (quote if type requires)
       switch (row.type) {
@@ -141,7 +144,7 @@ export class QueryResultComponent implements OnInit {
 				case "ntext":
 				case "text":
 				case "uniqueidentifier":
-        wStr += "'" + row.value + "'";
+        wStr += "'" + this.checkForWildcards(row.value, forDisplay) + "'";
 					break;
 				case "float":
 				case "bigint":
@@ -154,6 +157,10 @@ export class QueryResultComponent implements OnInit {
     }
 
     return wStr;
+  }
+
+  checkForWildcards(rowValue: string, forDisplay: boolean) {
+    return (forDisplay) ? rowValue : rowValue.replace(/%/g, "{14}");
   }
 
   constructOrderBy() {
@@ -182,9 +189,10 @@ export class QueryResultComponent implements OnInit {
   executeSQL(){
     //Run out and get what we need
     let col: string = (this.tabinfo.colfilterarr[0] == "*") ? "" : this.tabinfo.colfilterarr.join();    //Separated by comma
-    let where: string = (this.tabinfo.wherearrcomp.length > 0) ? this.constructWhereClause() : "";      // Separated by a space
+    let where: string = (this.tabinfo.wherearrcomp.length > 0) ? this.constructWhereClause(false) : "";      // Separated by a space
     let join: string = (this.tabinfo.joinarr.length > 0) ? this.constructJoin() : "";                   //Separated by a space
     let order: string = (this.tabinfo.orderarr.length > 0) ? this.constructOrderBy() : "";              //Separated by a comma
+
 
     this.data.getQueryData(this.tabinfo.server.replace('{0}', this.tabinfo.database), this.tabinfo.database, this.tabinfo.table.name,
     (col.length == 0) ? '0' : col, (where.length == 0) ? '0' : where, (join.length == 0) ? '0' : join, (order.length == 0) ? '0' : order,

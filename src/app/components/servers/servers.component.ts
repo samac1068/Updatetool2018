@@ -42,8 +42,8 @@ export class ServersComponent implements OnInit {
       this.queries = [];
       this.data.getUserSavedQueries().subscribe((results) => {
 
-        for(var i=0; i < results.length; i++) {
-          var q:Query = new Query();
+        for(let i=0; i < results.length; i++) {
+          let q:Query = new Query();
           q.id = results[i].ID;
           q.title = this.store.customURLDecoder(results[i].QueryTitle);
           q.database = results[i].DatabaseName;
@@ -53,7 +53,7 @@ export class ServersComponent implements OnInit {
           //console.log(q.querybody);
 
           this.queries.push(q);
-        };
+        }
       });
 
       //Now load the selection fields.

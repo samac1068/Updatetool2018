@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { System } from '../models/System.model';
 import { User } from '../models/User.model';
 import { Tab } from '../models/Tab.model';
+import { StringMap } from '@angular/core/src/render3/jit/compiler_facade_interface';
 
 @Injectable({
   providedIn: 'root'
@@ -28,6 +29,8 @@ export class StorageService {
   conditionals: string[] = ["AND", "OR"];
   operators: string[] = ["LIKE","NOT LIKE","=","<>","!=",">",">=","!>","<","<=","!<","IN","IS NULL","IS NOT NULL"];
   dbNumericals: string[] = ["bit","tinyint","bool","boolean","smallint","mediumint","int","integer","bigint","float","double","decimal","double precision","dec"];
+  ignoreChars: string[] = ["/"];
+
   constructor() { }
 
   // This will allow you to set a specific object for either the tab or the user variables
@@ -40,7 +43,7 @@ export class StorageService {
   }
 
   setSystemValue(section: string, value: any) {
-    this.system[section] = value;
+     this.system[section] = value;
   }
 
   getUserValue(section: string): any {
@@ -120,17 +123,25 @@ export class StorageService {
     return -1;
   }
 
-  customURLEncoder(str: string) {
+   //  headleyt:  20200105  added additional encoding characters to be consistent with what is in the API
+   customURLEncoder(str: string) {
     str = str.replace(/^\s+|\s+$/gm,'');
     str = str.replace(/ /gi, "%20");
+    str = str.replace(/\*/gi, "~");
     str = str.replace(/\*/gi, "!");
-
+    str = str.replace(/\\/gi, "`");
+    str = str.replace(/\'/gi, "^");
+    str = str.replace(/\>/gi, "gt");
     return str;
   }
 
+  //  headleyt:  20200105  added additional decoding characters to be consistent with what is in the API
   customURLDecoder(str: string) {
     str = str.replace(/%20/gi, " ");
+    str = str.replace(/\~/gi, "*");
     str = str.replace(/\!/gi, "*");
+    str = str.replace(/\`/gi, "\\");
+    str = str.replace(/\^/gi, "'");
 
     return str;
   }
@@ -139,4 +150,19 @@ export class StorageService {
   {
     return (this.dbNumericals.find(x => x == vartype) == undefined) ? "'" + value + "'" : value;
   }
+
+  //  headleyt (with help from Sean):  20210107 added this function to return the altername db name if it has one.
+  //  The commented out array should work, but didn't
+  getSelectedDBName(dbname)
+  {
+    for (let x = 0; x < this.system.databases.length; x++){
+        let obj = this.system.databases[x];
+        if (obj.id == dbname) {
+          if (obj.altname != null)
+          dbname = obj.altname;
+        }
+    }
+    return dbname;
+  }
+
 }

@@ -87,6 +87,7 @@ export class FiltersComponent implements OnInit {
     switch (this.curColumnType) {
       case "varchar":
       case "datetime":
+      case "date":
         whereItemStr += "'" + this.curInput + "'";
         break;
       case "int":
@@ -185,5 +186,10 @@ export class FiltersComponent implements OnInit {
 
   signalExecuteQuery() {
     this.comm.runQueryChange.emit();
+  }
+
+  evaluateChar(evt: any) {
+    if(this.store.ignoreChars.find(i => i === evt.key) != undefined)
+      evt.preventDefault();
   }
 }

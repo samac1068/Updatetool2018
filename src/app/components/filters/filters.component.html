@@ -56,7 +56,7 @@
 
   <div class="fieldSelect">
     <div [hidden]="curColumnType == 'bit'" >
-      <input type="text" id="txtFilterText" [(ngModel)]="curInput" [disabled]="!colSelected">
+      <input type="text" id="txtFilterText" [(ngModel)]="curInput" [disabled]="!colSelected" (keypress)="evaluateChar($event)" autocomplete="off">
     </div>
 
     <div [hidden]="curColumnType != 'bit'">
