@@ -48,7 +48,7 @@
         <option value="-9"></option>
         <option *ngFor="let col of tabinfo.columns">{{ col.columnname }}</option>
       </select>
-      <select id="ddlOperatorList" style="width: 70px; margin-left: 5px;" [(ngModel)]="curOperator" [disabled]="!tableSelected">
+      <select id="ddlOperatorList" style="width: 70px; margin-left: 5px;" [(ngModel)]="curOperator" [disabled]="!tableSelected" (change)="onOperatorChange()">
         <option *ngFor="let operator of operatorOpt" value="{{ operator }}">{{ operator }}</option>
       </select>
     </div>

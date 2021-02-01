@@ -12,7 +12,7 @@ export class User {
   
   servername: string;
   server: string;
-  database: string
+  database: string;
   
   appdata: string;
   

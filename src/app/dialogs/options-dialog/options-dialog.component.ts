@@ -53,5 +53,6 @@ export class OptionsDialogComponent implements OnInit {
  
     this.user.database = this.userDB;
     this.closeDialog();
+    console.log("saveUpdatedOptions");
   }
 }

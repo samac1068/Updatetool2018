@@ -28,24 +28,23 @@ export class ConfigService {
     const serverList = [];
 
     for (let i = 0; i < servers.length; i++) {
-      this.server = {id: servers[i].getAttribute('id'), offName: servers[i].getAttribute('offName')}
+      this.server = {id: servers[i].getAttribute('id'), offName: servers[i].getAttribute('offName')}   
       serverList.push(this.server);
     }
 
     // Pulling server data
     const databases = xmlData.getElementsByTagName('database');
     const databaseList = [];
-
     for (let i = 0; i < databases.length; i++) {
       this.database = {id: databases[i].getAttribute('id'), system: databases[i].getAttribute('system'), altname: databases[i].getAttribute('altname')}
       databaseList.push(this.database);
     }
-
     return {servers: serverList, databases: databaseList};
   }
 
+
   //Returns a single server name and path currently being used
- /* getSystemConfig() {
+  getSystemConfig() {
     const xml = new XMLHttpRequest();
     xml.open('GET', this.systemUrl, false);
     xml.send();
@@ -57,5 +56,5 @@ export class ConfigService {
         return {type: sys[i].getAttribute('type'), path: sys[i].firstChild.nodeValue };
       }
     }
-  }*/
+  }
 }

@@ -20,39 +20,41 @@ export class TabComponent implements OnInit {
 
   @Input() tabinfo: Tab;
   tabid: string = "";
-
+  
   constructor(private store: StorageService, private data: DataService, private comm: CommService, public dialog: MatDialog) { }
 
   ngOnInit() {
     //Table was selected
     this.comm.tableSelected.subscribe((data) => {
       //Need to pull all of the columns for the selected table
-      this.data.getTableProperties(this.tabinfo.server.replace('{0}', this.tabinfo.database), this.tabinfo.database, this.tabinfo.table.name).subscribe((results) => {
-        this.tabinfo.columns = [];
-        this.tabinfo.availcolarr = [];
+      //  headleyt:  20210120  Added a condition so this action will only take place on the active tab 
+      if (this.tabinfo === this.store.selectedTab){
+        this.data.getTableProperties(this.tabinfo.server.replace('{0}', this.tabinfo.database), this.tabinfo.database, this.tabinfo.table.name).subscribe((results) => {
+          this.tabinfo.columns = [];
+          this.tabinfo.availcolarr = [];
+          for(let row of results)
+          {
+            var r: Column = new Column();
+            r.tablename = row.TableName;
+            r.columnid = row.ColumnID;
+            r.columnname = row.ColumnName;
+            r.vartype = row.VarType;
+            r.maxlength = row.MaxLength;
+            r.primarykey = row.PrimaryKey;
+            r.precise = row.Precise;
+            r.scale = row.Scale;
+            r.charfulllength = row.CharFullLength;
+            r.selected = this.tabinfo.colfilterarr.indexOf(r.columnname) > -1;
+            r.colSelected = null;
 
-        for(let row of results)
-        {
-          var r: Column = new Column();
-          r.tablename = row.TableName;
-          r.columnid = row.ColumnID;
-          r.columnname = row.ColumnName;
-          r.vartype = row.VarType;
-          r.maxlength = row.MaxLength;
-          r.primarykey = row.PrimaryKey;
-          r.precise = row.Precise;
-          r.scale = row.Scale;
-          r.charfulllength = row.CharFullLength;
-          r.selected = this.tabinfo.colfilterarr.indexOf(r.columnname) > -1;
-          r.colSelected = null;
+            this.tabinfo.columns.push(r);
+            this.tabinfo.availcolarr.push(r);
+            if(r.primarykey) this.tabinfo.hasPrimKey = true;
+          }
+        });
 
-          this.tabinfo.columns.push(r);
-          this.tabinfo.availcolarr.push(r);
-          if(r.primarykey) this.tabinfo.hasPrimKey = true;
-        }
-      });
-
-      this.comm.columnsUpdated.emit(this.tabinfo);
+        this.comm.columnsUpdated.emit(this.tabinfo);
+       }
     });
 
     //Custom Column button selected
@@ -95,7 +97,7 @@ export class TabComponent implements OnInit {
         const dialogRef = this.dialog.open(ViewerDialogComponent, {width: '1000px', height: '730px', autoFocus: true, data: this.tabinfo });
       }
     });
-
+    
     // A stored query was requested
     if(this.tabinfo.isstoredquery) {
       setTimeout(() => {
@@ -105,4 +107,5 @@ export class TabComponent implements OnInit {
       }, 500);
     }
   }
+
 }

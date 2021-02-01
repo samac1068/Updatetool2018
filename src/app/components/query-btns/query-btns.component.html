@@ -8,12 +8,15 @@
     <button id="btnCSV" class="standardBtn" (click)="exportToExcelHandler('csv')" ngbTooltip="Export results to CSV" placement="bottom"><i class="fa fa-file-text-o"></i> CSV</button>
   </div>
   <div class="btnGroup">
-    <button class="standardBtn" id="btnViewer" (click)="openViewerWindow()" ngbTooltip="View existing Stored Procs, Views, and Function" placement="bottom">Proc/View/Func Viewer</button>
+    <!--  headleyt:  20210129  Commented out until we can add back in  -->
+<!--    <button class="standardBtn" id="btnViewer" (click)="openViewerWindow()" ngbTooltip="View existing Stored Procs, Views, and Function" placement="bottom">Proc/View/Func Viewer</button>  -->
     <button id="btnExcel" class="standardBtn" (click)="exportToExcelHandler('excel')" ngbTooltip="Export results to XLSX" placement="bottom"><i class="fa fa-file-excel-o"></i> Excel</button>
+<!--  headleyt:  20210129  Moved the clipboard button up until we can put the viewer button back-->    
+    <button class="standardBtn" id="btnClipboard" (click)="copyToClipboard()" ngbTooltip="Copy results to clipboard" placement="bottom"><i class="fa fa-clipboard"></i> Clipboard</button>
   </div>
   <div class="btnGroup">
     <button class="standardBtn" id="btnPrimaryKey" disabled="true">Set/Cgh Primary Key</button>
-    <button class="standardBtn" id="btnClipboard" (click)="copyToClipboard()" ngbTooltip="Copy results to clipboard" placement="bottom"><i class="fa fa-clipboard"></i> Clipboard</button>
+<!--    <button class="standardBtn" id="btnClipboard" (click)="copyToClipboard()" ngbTooltip="Copy results to clipboard" placement="bottom"><i class="fa fa-clipboard"></i> Clipboard</button>  -->
   </div>
 </div>
 <hr />

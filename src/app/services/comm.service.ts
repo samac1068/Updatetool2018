@@ -7,6 +7,10 @@ export class CommService {
     userInfoLoaded = new EventEmitter();    //When user's information has been loaded
     tableSelected = new EventEmitter();    //When a table is selected from the list
     columnsUpdated = new EventEmitter();    //After the table is loaded and a list of columns is retrieved
+    setQueryButton = new EventEmitter();  //headleyt:  20210112 Enable/disable the Save Current Query button
+    populateQueryList = new EventEmitter();  //  headleyt:  20210113  populate list of user saved queries
+
+    selectTab = new EventEmitter();  //  headley:  20210120  a tab has been selected
 
     noToolUserInfoFound = new EventEmitter();    //Displays when no user's information was saved
     userUpdatedReloadSys = new EventEmitter();    //Only some of the data was found

@@ -27,7 +27,7 @@ export class AppComponent implements OnInit {
     this.getSystemConfig();
     this.getServerConfig();
     this.identifyLocale();
-
+ 
     console.log("apipath is ", environment.apipath);
     console.log("devmode is ", environment.usedev);
 
@@ -36,7 +36,8 @@ export class AppComponent implements OnInit {
       // Manually set the necessary variables
 
       this.store.setUserValue("token", null);
-      this.store.setUserValue("username", 'sean.mcgill');
+//      this.store.setUserValue("username", 'sean.mcgill');
+      this.store.setUserValue("username", 'theresa.headley');
       this.store.setUserValue("initalapp", 'UPDATETOOL');
       this.store.setUserValue("tokencreatedate", null);
       this.getUserInformation();

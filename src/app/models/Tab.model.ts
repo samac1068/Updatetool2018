@@ -21,6 +21,7 @@ export class Tab {
 
   querystr: string;
   querytitle: string;
+  qtype: string;  // headleyt:  20210106 added qtype to make it available as a parameter when saving a query
 
   //Variabled for standard uses
   databasearr: any[]; //id, name
@@ -43,4 +44,5 @@ export class Tab {
   sqdatabase: string;
   sqserver: string;
   sqbody: string;
+  
 }

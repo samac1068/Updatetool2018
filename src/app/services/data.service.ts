@@ -11,12 +11,12 @@ import {catchError} from 'rxjs/operators';
 export class DataService {
 
   constructor(private http: HttpClient, private store: StorageService) { }
-
+  
   private getWSPath(): string {
     return this.store.system['webservice']['path'];
   }
 
-  private static errorHandler(error){
+  private errorHandler(error){
     let errorMessage = '';
     if (error.error instanceof ErrorEvent) {
       // client-side error
@@ -75,19 +75,19 @@ export class DataService {
   getTableDBList(server: string, db: string) {
     console.log('getTableDBList');
     return this.http.get<any[]>(`${this.getWSPath()}GetDbTableList/${this.store.getPassKey()}/${server}/${db}`)
-      .pipe(catchError(DataService.errorHandler));
+      .pipe(catchError(this.errorHandler));
   }
 
   getQueryData(server: string, db: string, tbl: string, col: string, where: string, join: string, order: string, cnt: boolean, lmtrow: boolean, speccnt: string) {
     console.log('getQueryData');
-    console.log(`${this.getWSPath()}GetQueryData/${this.store.getPassKey()}/${server}/${db}/${tbl}/${col}/${where}/${join}/${order}/${cnt}/${lmtrow}/${speccnt}`);
+    console.log('table value:  ' + tbl);
     return this.http.get(`${this.getWSPath()}GetQueryData/${this.store.getPassKey()}/${server}/${db}/${tbl}/${col}/${where}/${join}/${order}/${cnt}/${lmtrow}/${speccnt}`);
   }
 
   getTableProperties(server: string, db: string, tbl: string): Observable<any[]> {
     console.log('getTableProperties');
     return this.http.get<any[]>(`${this.getWSPath()}GetTableProperties/${this.store.getPassKey()}/${server}/${db}/${tbl}`)
-      .pipe(catchError(DataService.errorHandler));
+      .pipe(catchError(this.errorHandler));
   }
 
   getStoreProcList(server: string, db: string) {
@@ -121,9 +121,10 @@ export class DataService {
     return this.http.get<any[]>(`${this.getWSPath()}AddEditUpdateUserInfo/${this.store.getPassKey()}/${action}/${username}/${firstname}/${lastname}/${network}/${userid}`);
   }
 
-  storeNewQuery(title: string, body: string, server: string, database: string, userid: string) {
+  //  headleyt:  20210106  added a new parameter, qtype, to be added when the query is created
+  storeNewQuery(title: string, body: string, server: string, database: string, userid: string, qtype: string) {
     console.log('storeNewQuery');
-    return this.http.get<any[]>(`${this.getWSPath()}StoreUserQuery/${this.store.getPassKey()}/${this.store.customURLEncoder(title)}/${this.store.customURLEncoder(body)}/${server}/${database}/${userid}`);
+    return this.http.get<any[]>(`${this.getWSPath()}StoreUserQuery/${this.store.getPassKey()}/${this.store.customURLEncoder(title)}/${this.store.customURLEncoder(body)}/${server}/${database}/${userid}/${qtype}`);
   }
 
   updateRowInfo(server: string, db:string, table:string, updatekey:string, extwhere: string) {

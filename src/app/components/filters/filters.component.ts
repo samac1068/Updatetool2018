@@ -48,6 +48,15 @@ export class FiltersComponent implements OnInit {
     });
   }
 
+  //  headleyt:  20210128  Added function to enable the apply and add the column if the operator is null or is not null
+  onOperatorChange(){
+    console.log("current operator:  " + this.curOperator);
+    if (this.curOperator.toUpperCase() == "IS NULL" || this.curOperator.toUpperCase() == "IS NOT NULL"){
+      this.filterAdded = true;
+      this.curInput = " ";
+    }
+  }
+
   updateGetCount(){
     this.tabinfo.getcount = !this.tabinfo.getcount;
     this.evaluateBtnStatus();
@@ -83,19 +92,23 @@ export class FiltersComponent implements OnInit {
     // Add the where string
     whereItemStr += this.curColumn + " " + this.curOperator + " ";
 
+    if (this.curOperator.toUpperCase() != 'IS NULL' && this.curOperator.toUpperCase() != 'IS NOT NULL') {
     //Do we need to wrap in quotes for not based on the column properties
-    switch (this.curColumnType) {
-      case "varchar":
-      case "datetime":
-      case "date":
-        whereItemStr += "'" + this.curInput + "'";
-        break;
-      case "int":
-      case "bit":
-        whereItemStr += this.curInput;
-        break;
+      switch (this.curColumnType) {
+        case "varchar":
+        case "datetime":
+        case "date":
+          whereItemStr += "'" + this.curInput + "'";
+          break;
+        case "int":
+        case "bit":
+          whereItemStr += this.curInput;
+          break;
+      }
+      console.log('inside adding quotes');
     }
 
+    console.log('whereItemStr:  :' + whereItemStr + ":");
     //Now add or edit it to the array
     if(this.curIndex > -1 && this.curWID != -1) {
         //Need to update the existing values
@@ -105,8 +118,11 @@ export class FiltersComponent implements OnInit {
         this.tabinfo.wherearrcomp[this.curIndex].name = this.curColumn;
         this.tabinfo.wherearrcomp[this.curIndex].operator = this.curOperator;
         this.tabinfo.wherearrcomp[this.curIndex].value = this.curInput;
-    } else {
+        console.log("this.curInput:  " + this.curInput);
+    } 
+    else {
       //Add to the table
+      console.log("adding to the where array:  :" + this.curInput + ":" );
       this.tabinfo.wherearrcomp.push({
         wid: this.createWID(this.tabinfo.wherearrcomp.length), str: whereItemStr, condition: this.curCondition, type: this.curColumnType,
         name: this.curColumn, operator: this.curOperator, value: this.curInput
