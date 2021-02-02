@@ -29,6 +29,8 @@ export class FiltersComponent implements OnInit {
   filterAdded: boolean = false;
   hasWhere: boolean = false;
   colSelected: boolean = false;
+  noValueNeeded: boolean = false;
+  hasValue: boolean = false;
 
   addUpdateBtn: string = "Add";
 
@@ -50,11 +52,10 @@ export class FiltersComponent implements OnInit {
 
   //  headleyt:  20210128  Added function to enable the apply and add the column if the operator is null or is not null
   onOperatorChange(){
-    console.log("current operator:  " + this.curOperator);
     if (this.curOperator.toUpperCase() == "IS NULL" || this.curOperator.toUpperCase() == "IS NOT NULL"){
-      this.filterAdded = true;
-      this.curInput = " ";
-    }
+      this.noValueNeeded = true;
+      this.curInput = "";
+    } else this.noValueNeeded = false;
   }
 
   updateGetCount(){
@@ -89,6 +90,8 @@ export class FiltersComponent implements OnInit {
     // set the conditional
     this.curCondition = ((this.curCondition != "" && this.curCondition != '-9') ? this.curCondition : "AND");
 
+    if(this.noValueNeeded) this.curCondition = "";
+
     // Add the where string
     whereItemStr += this.curColumn + " " + this.curOperator + " ";
 
@@ -105,10 +108,8 @@ export class FiltersComponent implements OnInit {
           whereItemStr += this.curInput;
           break;
       }
-      console.log('inside adding quotes');
     }
 
-    console.log('whereItemStr:  :' + whereItemStr + ":");
     //Now add or edit it to the array
     if(this.curIndex > -1 && this.curWID != -1) {
         //Need to update the existing values
@@ -118,14 +119,17 @@ export class FiltersComponent implements OnInit {
         this.tabinfo.wherearrcomp[this.curIndex].name = this.curColumn;
         this.tabinfo.wherearrcomp[this.curIndex].operator = this.curOperator;
         this.tabinfo.wherearrcomp[this.curIndex].value = this.curInput;
-        console.log("this.curInput:  " + this.curInput);
-    } 
+    }
     else {
       //Add to the table
-      console.log("adding to the where array:  :" + this.curInput + ":" );
       this.tabinfo.wherearrcomp.push({
-        wid: this.createWID(this.tabinfo.wherearrcomp.length), str: whereItemStr, condition: this.curCondition, type: this.curColumnType,
-        name: this.curColumn, operator: this.curOperator, value: this.curInput
+        wid: this.createWID(this.tabinfo.wherearrcomp.length),
+        str: whereItemStr,
+        condition: this.curCondition,
+        type: this.curColumnType,
+        name: this.curColumn,
+        operator: this.curOperator,
+        value: this.curInput
       });
     }
 
@@ -142,6 +146,7 @@ export class FiltersComponent implements OnInit {
     this.curInput = "";
     this.curIndex = -1;
     this.curWID = -1;
+    this.noValueNeeded = false;
   }
 
   removeAllWhereItems(){
@@ -185,6 +190,9 @@ export class FiltersComponent implements OnInit {
   }
 
   evaluateBtnStatus(){
+    //Add Button
+    this.hasValue = this.curInput.length > 0;
+
     //Apply button
     this.filterAdded = this.tabinfo.wherearrcomp.length > 0 || this.tabinfo.getcount || this.tabinfo.limitRows;
 
@@ -205,7 +213,7 @@ export class FiltersComponent implements OnInit {
   }
 
   evaluateChar(evt: any) {
-    if(this.store.ignoreChars.find(i => i === evt.key) != undefined)
-      evt.preventDefault();
+    if(this.store.ignoreChars.find(i => i === evt.key) != undefined) { evt.preventDefault(); }
   }
+
 }

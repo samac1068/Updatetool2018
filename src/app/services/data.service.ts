@@ -11,7 +11,7 @@ import {catchError} from 'rxjs/operators';
 export class DataService {
 
   constructor(private http: HttpClient, private store: StorageService) { }
-  
+
   private getWSPath(): string {
     return this.store.system['webservice']['path'];
   }
@@ -80,7 +80,6 @@ export class DataService {
 
   getQueryData(server: string, db: string, tbl: string, col: string, where: string, join: string, order: string, cnt: boolean, lmtrow: boolean, speccnt: string) {
     console.log('getQueryData');
-    console.log('table value:  ' + tbl);
     return this.http.get(`${this.getWSPath()}GetQueryData/${this.store.getPassKey()}/${server}/${db}/${tbl}/${col}/${where}/${join}/${order}/${cnt}/${lmtrow}/${speccnt}`);
   }
 

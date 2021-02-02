@@ -20,8 +20,8 @@ export class QueryResultComponent implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
 
   colHeader: string[];
-  //  rtnResults: any[];  sean change
   dataSource: any;
+  rowsReturned: string;
 
   constructor(private comm: CommService, private data: DataService, private store: StorageService, private excel: ExcelService, public dialog: MatDialog) { }
 
@@ -137,7 +137,7 @@ export class QueryResultComponent implements OnInit {
     //Where Clause
     if(this.tabinfo.wherearrcomp.length > 0){
       strSQL += this.constructWhereClause(true);
-      displayStrSQL += this.constructWhereClauseSentence(true);
+      displayStrSQL += this.constructWhereClauseSentence();
     }
 
     // Order By
@@ -161,15 +161,15 @@ export class QueryResultComponent implements OnInit {
       let row: any = this.tabinfo.wherearrcomp[i];
 
       //Add in the condition for the second + where item
-      if(i > 0)
-        wStr += " " + row.condition + " ";
+      if(i > 0) wStr += " " + row.condition + " ";
 
-      //Add the column and opeator
+      //Add the column and operator
       //  headleyt:  20210115  modifications integrated from Sean
       if(forDisplay)
         wStr += row.name + " " + row.operator + " ";
       else
         wStr += row.name + " {" + this.store.operators.indexOf(row.operator) + "} ";
+
       if (row.operator.toUpperCase() != "IS NULL" && row.operator.toUpperCase() != "IS NOT NULL"){
       //Add the value (quote if type requires)
         switch (row.type) {
@@ -194,17 +194,16 @@ export class QueryResultComponent implements OnInit {
           wStr += row.value;
 				  	break;
         }
-      }
-      else{
-        wStr += "'NA'";
+      } else {
+        wStr = wStr.substr(0, wStr.length - 1);
       }
     }
-    //console.log('where string before return:  ' + wStr);
+
     return wStr;
   }
 
   //  headley:  20200129  Build the where clause to display as a sentence vice SQL syntax
-  constructWhereClauseSentence(forDisplay: boolean){
+  constructWhereClauseSentence(){
     //Manually join the where clause adding in the appropriate conditioning statements
     let wStr: string = "where ";
     for(let i = 0; i < this.tabinfo.wherearrcomp.length; i++){
@@ -212,16 +211,13 @@ export class QueryResultComponent implements OnInit {
 
       //Add in the condition for the second + where item
       if(i > 0)
-        wStr += " " + row.condition + " ";
+        wStr += " " + (row.condition == 'IS NOT NULL' || row.condition == 'IS NULL') ? row.condition.toUpperCase() : row.condition + " ";
 
-      //Add the column and opeator
+      //Add the column and operator
       //  headleyt:  20210115  modifications integrated from Sean
-      if(forDisplay)
-        wStr += this.TitleCase(row.name) + " " + this.getTextOperator(this.store.operators.indexOf(row.operator)) + " ";
-      else
-        wStr += this.TitleCase(row.name) + " {" + this.store.operators.indexOf(row.operator) + "} ";
+      wStr += this.TitleCase(row.name) + " " + this.getTextOperator(this.store.operators.indexOf(row.operator)) + " ";
 
-        if (row.operator.toUpperCase() != "IS NULL" && row.operator.toUpperCase() != "IS NOT NULL"){
+      if (row.operator.toUpperCase() != "IS NULL" && row.operator.toUpperCase() != "IS NOT NULL"){
       //Add the value (quote if type requires)
         switch (row.type) {
           case "char":
@@ -235,7 +231,7 @@ export class QueryResultComponent implements OnInit {
 			  	case "ntext":
 				  case "text":
   				case "uniqueidentifier":
-          wStr += "'" + this.checkForWildcards(row.value, forDisplay) + "'";
+          wStr += "'" + this.checkForWildcards(row.value, true) + "'";
 		  			break;
 			  	case "float":
 				  case "bigint":
@@ -246,11 +242,8 @@ export class QueryResultComponent implements OnInit {
 				  	break;
         }
       }
-      else{
-        wStr += "'NA'";
-      }
     }
-    //console.log('where string before return:  ' + wStr);
+
     return wStr;
   }
 
@@ -261,7 +254,7 @@ export class QueryResultComponent implements OnInit {
 
   //  headleyt:  20210129  Get the text equivalent of the operartor such as equals instead of ==
   getTextOperator(operator: any){
-    return this.store.operatorsText[operator];
+    return (operator == 'IS NULL' || operator == 'IS NOT NULL') ? this.store.operatorsText[operator].toUpperCase() : this.store.operatorsText[operator];
   }
 
   /* //  headleyt:  20210129  Added camelCase converter so the column names in sentence format are all the same
@@ -275,9 +268,9 @@ export class QueryResultComponent implements OnInit {
 
    //  headleyt:  20210201  Added TitleCase converter so the column names in sentence format are all the same
    TitleCase(str: string) {
-    return str.toLowerCase().split('_').map(function(word) {
+    return str.toLowerCase().split('_').map(word => {
       return (word.charAt(0).toUpperCase() + word.slice(1));
-    }).join('');
+    }).join(' ');
   }
 
   constructOrderBy() {
@@ -340,6 +333,7 @@ export class QueryResultComponent implements OnInit {
     //Load the data into the common variable
     this.dataSource = new MatTableDataSource(results);
     this.dataSource.sort = this.sort;
+    this.rowsReturned = "Rows Returned: " + results.length;
   }
 
   exportAsXLSX(type: string):void {
@@ -349,7 +343,6 @@ export class QueryResultComponent implements OnInit {
   saveCurrentQuery() {
     //Only save if this query ISN'T a currently store query
     //  headleyt:  20210106  added qtype as a parameter to saving the new query
-    //console.log('saveCurrentQuery in query-result.component');
     if(this.tabinfo.isstoredquery)
       alert("This query is already saved.");
     else {
@@ -357,13 +350,12 @@ export class QueryResultComponent implements OnInit {
         const dialogQuery = this.dialog.open(QueryDialogComponent, {width: '500px', height: '175px', autoFocus: true, data: this.tabinfo });
         dialogQuery.afterClosed().subscribe(() => {
           if(this.tabinfo.querytitle != undefined) {
-//  headleyt:  20210128  Added check for the % wildcard when saving the query.  When the query is later opened and run, it is decoded in the API
+            //  headleyt:  20210128  Added check for the % wildcard when saving the query.  When the query is later opened and run, it is decoded in the API
             this.data.storeNewQuery(this.tabinfo.querytitle, this.checkForWildcards(this.tabinfo.querystr, false), this.tabinfo.server, this.tabinfo.database, this.store.getUserValue("userid"), this.tabinfo.qtype)
             .subscribe(() => {
               alert("The query has been stored under the title: " + this.tabinfo.querytitle + ".");
             });
           //  headleyt:  20210114  raise event to repopulate saved query list in servers.component
-          //console.log('right before emitting populatequerylist and after the query has been saved');
           this.comm.populateQueryList.emit();
           }
         });
