@@ -15,7 +15,6 @@ body {
   -moz-border-radius:4px;
   -webkit-border-radius:4px;
   border-radius:4px;
-  /*border:2px solid #fcfffa;*/
   border:2px solid #AAA;
   display:inline-block;
   cursor:pointer;
@@ -49,7 +48,6 @@ body {
   -moz-border-radius:4px;
   -webkit-border-radius:4px;
   border-radius:4px;
-  /*border:2px solid #fcfffa;*/
   border:2px solid #AAA;
   display:inline-block;
   cursor:pointer;
@@ -82,4 +80,37 @@ body {
   height: 1px;
   width: 98%;
   margin: 0 auto;
+}
+
+.standardRedBtn {
+  background-color:#700000;
+  -moz-border-radius:4px;
+  -webkit-border-radius:4px;
+  border-radius:4px;
+  border:2px solid #AAA;
+  display:inline-block;
+  cursor:pointer;
+  color:#ffffff;
+  font-family:Arial, Helvetica, sans-serif;
+  font-size:11px;
+  font-weight:bold;
+  padding:4px 10px;
+  text-decoration:none;
+  text-shadow:0 1px 0 #FF4040;
+  height: 27px;
+  margin-left: 5px;
+}
+.standardRedBtn:hover {
+  background-color:#A60000;
+  border:2px solid #094238;
+  color: #ffff00;
+}
+.standardRedBtn:active {
+  position:relative;
+  top:1px;
+}
+
+.standardRedBtn:disabled {
+  background-color:#400000;
+  color: #717371;
 }

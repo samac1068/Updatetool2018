@@ -13,6 +13,7 @@ export class Tab {
   columns: Column[];  //List of columns or primary table
 
   hasPrimKey: boolean;  // Set to true if the table has a primary key already set
+  tempPrimKey: any = null;    //Storage location of a temporary primary key.  May include multiple columns
 
   active: boolean;
 
@@ -44,5 +45,6 @@ export class Tab {
   sqdatabase: string;
   sqserver: string;
   sqbody: string;
-  
+
+  selectedrow: any;
 }

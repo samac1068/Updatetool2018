@@ -19,12 +19,12 @@ export class CommService {
     runStoredQuery = new EventEmitter();     //Execute a stored query
     storeUserOptions = new EventEmitter();    // Store the selected user options, if there is a change
     saveNewQuery = new EventEmitter();        //Save the currently created query to the database
-    
+
     // Buttons Clicked Events
     columnBtnClicked = new EventEmitter();    //Customize Column Button clicked
     orderByBtnClicked = new EventEmitter();    //Order By Button clicked
     joinBtnClicked = new EventEmitter();       // Join Button clicked
-    viewerBtnClicked = new EventEmitter();     //Store proc viewer button clicked 
+    viewerBtnClicked = new EventEmitter();     //Store proc viewer button clicked
 
     addNewTabClicked = new EventEmitter();    //A new tab has been requested either for the stored query or for the selected server and database
 
@@ -32,4 +32,6 @@ export class CommService {
     copyToClipboardClicked = new EventEmitter();      //Copy results to the clipboard
 
     tabFault = new EventEmitter();            //Used when there is an issue withe the data updating the wrong tab
+
+    dataModifierClicked = new EventEmitter();   // Calls the new data modifier dialog to be opened.
 }

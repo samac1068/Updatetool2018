@@ -90,8 +90,21 @@ export class StorageService {
   }
 
   /// Global Services - Let's see if this will work
+  isInArray(arr: any, value: any) {
+    if(arr == null) return false;
+
+    for(let i = 0; i < arr.length; i++) {
+      if(arr[i] == value)
+        return true;
+    }
+
+    return false;
+  }
+
   findIndexByValue(arr: any, key: string, value: any){
+  console.log("value in storage service:  " + value);
     for (var i = 0; i < arr.length; i++) {
+      console.log('value of i:  ' + i);
       if (arr[i][key].toLowerCase() === value.toLowerCase()) {
           return i;
       }
@@ -154,7 +167,7 @@ export class StorageService {
     return (this.dbNumericals.find(x => x == vartype) == undefined) ? "'" + value + "'" : value;
   }
 
-  //  headleyt (with help from Sean):  20210107 added this function to return the altername db name if it has one.  
+  //  headleyt (with help from Sean):  20210107 added this function to return the altername db name if it has one.
   //  The commented out array should work, but didn't
   getSelectedDBName(dbname)
   {

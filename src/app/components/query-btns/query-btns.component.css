@@ -9,7 +9,7 @@
 }
 
 /* Right Buttons */
-#btnClipboard, /*#btnExcel,*/ #btnCSV, #btnOrder {
+#btnClipboard, /*#btnExcel,*/ #btnCSV, #btnOrder, #btnModifier {
   margin-left: 8px;
   width: 49%;
   height: 20px;

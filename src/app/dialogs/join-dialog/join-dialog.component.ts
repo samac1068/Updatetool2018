@@ -76,11 +76,13 @@ export class JoinDialogComponent implements OnInit {
     var i: number;
     var found: boolean = false;
 
+    console.log('tbl (identifyLimitSide):  ' + tbl);
     if(this.joinclausearr.length > 0) {
       // Search for the table
       for(i = 0; i < this.joinclausearr.length; i++) {
         if(this.joinclausearr[i].tableleft == tbl || this.joinclausearr[i].tableright == tbl) {
           found = true;
+          console.log('itap is in the left side:  ' + tbl);
           break;
         }
       }
@@ -100,9 +102,11 @@ export class JoinDialogComponent implements OnInit {
             dbarr.push({id: this.joinclausearr[i].dbright});
 
           // Add the table to the temp arr
+          console.log('tblarr length - before:  ' + tblarr.length);      
           if(this.store.findIndexByValue(tblarr, 'id', this.joinclausearr[i].tableleft) == -1)
             tblarr.push({Name: this.joinclausearr[i].tableleft});
-          
+
+console.log("tblarr length - after:  " + tblarr.length);
           if(this.store.findIndexByValue(tblarr, 'id', this.joinclausearr[i].tableright) == -1)
             tblarr.push({Name: this.joinclausearr[i].tableright});
         }
@@ -131,8 +135,15 @@ export class JoinDialogComponent implements OnInit {
 
   //Handler when a Database is selected
   getAvailableTables(side: string){
+    this.msgarr = "";
+
     this.ws.getTableDBList(this.serverfull.replace('{0}', (side == "left") ? this.tleftdb : this.trightdb), (side == "left") ? this.tleftdb : this.trightdb)
     .subscribe((results) => {
+//  headleyt:  20210218  Added a check on the size of the joinclausearr to see if there are 5 rows already.  If there are 5 rows already, no more can be added      
+      if (this.joinclausearr.length >= 5){
+        this.msgarr = "You cannot have more than 5 join statements. Please try again.";
+      }
+      else{ 
       var arr: any = [];
       for(var i = 0; i < results.length; i++) {
           arr.push(results[i]);
@@ -143,6 +154,7 @@ export class JoinDialogComponent implements OnInit {
         this.tlefttblarr = arr;
       else
         this.trighttblarr = arr;
+      } 
     });
   }
 
@@ -150,20 +162,28 @@ export class JoinDialogComponent implements OnInit {
   getAvailableColumns(side: string) {
     //A table was selected, so we must also limit the opposing side or identify this side as the limited one - only if the other side is blank
     this.msgarr = "";
-    
     if(this.tlefttable === this.trighttable) {
       this.msgarr = "You cannot have the same table on both sides of the join statement. Please try again.";
       setTimeout(() => {
         if(side === "left")
-          this.tlefttable = "";
-        else
+          this.tlefttable = "";   
+        else 
           this.trighttable = "";
       });
-    } else {
-      if((side == "left" && this.trightdb == "" || this.trighttable == "" || this.trightcolumn == "") ||
-        (side == "right" && this.tleftdb == "" || this.tlefttable == "" || this.tleftcolumn == ""))
+    } 
+    else {
+//  headleyt:  20210218  Commented out the identifyLimitSide check here as it wasn't allowing additional join rows to be added      
+/*       if((side == "left" && this.trightdb == "" || this.trighttable == "" || this.trightcolumn == "") ||
+        (side == "right" && this.tleftdb == "" || this.tlefttable == "" || this.tleftcolumn == "")){
         this.identifyLimitSide(side);
-  
+        }
+  */ 
+ //  headleyt:  20210218  Based on what side is being populated, clearing out the table array before to it to prevent the previous
+ //     table selection columns from being available in the column list
+      if (side === "left")      
+         this.tleftcolarr = [];
+      else
+         this.trightcolarr = [];
       this.ws.getTableProperties(this.serverfull.replace('{0}', (side == "left") ? this.tleftdb : this.trightdb), (side == "left") ? this.tleftdb : this.trightdb, 
         (side == "left") ? this.tlefttable : this.trighttable).subscribe((results) => {
         for(let row of results)

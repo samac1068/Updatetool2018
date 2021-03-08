@@ -1,6 +1,6 @@
 
 .divQuery {
-  height: 38vh;
+  height: 36vh;
   width: 100%;
   overflow-y: auto;
   margin-left: 5px;
@@ -15,7 +15,7 @@
 }
 
 .divResults {
-  height: 40vh;
+  height: 42vh;
   width: 99.5%;
   overflow-y: auto;
   margin-left: 5px;
@@ -64,5 +64,12 @@ th.mat-sort-header-sorted {
   height: 15px;
   background-color: #eeeeee;
   width: 100%;
+  border-bottom: 1px solid black;
+}
+
+.divModButtons {
+  height: 30px;
+  width: 100%;
+  background-color: #DDDDDD;
   border-bottom: 1px solid black;
 }

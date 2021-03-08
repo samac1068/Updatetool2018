@@ -17,7 +17,7 @@ export class FiltersComponent implements OnInit {
   operatorOpt = [];
 
   curCondition: string;
-  curInput: string;
+  curInput: string = "";  //  headleyt:  20210205  Set default to empty string as it was causing an error 
   curOperator: string = "LIKE";
   curColumn: string;
   curColumnType: string;
@@ -41,7 +41,7 @@ export class FiltersComponent implements OnInit {
     this.conditionalOpt = this.store.conditionals;
     this.operatorOpt = this.store.operators;
     this.tabinfo.wherearrcomp = [];
-
+  
     //Listener
     this.comm.columnsUpdated.subscribe((data) => {
       //Columns are updated so load them here.
@@ -95,7 +95,7 @@ export class FiltersComponent implements OnInit {
     // Add the where string
     whereItemStr += this.curColumn + " " + this.curOperator + " ";
 
-    if (this.curOperator.toUpperCase() != 'IS NULL' && this.curOperator.toUpperCase() != 'IS NOT NULL') {
+    if (this.curOperator.toUpperCase() != 'IS NULL' && this.curOperator.toUpperCase() != 'IS NOT NULL' && this.curOperator != 'IN') {
     //Do we need to wrap in quotes for not based on the column properties
       switch (this.curColumnType) {
         case "varchar":
@@ -108,6 +108,9 @@ export class FiltersComponent implements OnInit {
           whereItemStr += this.curInput;
           break;
       }
+    }
+    else if (this.curOperator.toUpperCase() == 'IN'){
+      whereItemStr += this.curInput;
     }
 
     //Now add or edit it to the array
@@ -194,10 +197,11 @@ export class FiltersComponent implements OnInit {
     this.hasValue = this.curInput.length > 0;
 
     //Apply button
-    this.filterAdded = this.tabinfo.wherearrcomp.length > 0 || this.tabinfo.getcount || this.tabinfo.limitRows;
+      this.filterAdded = this.tabinfo.wherearrcomp.length > 0 || this.tabinfo.getcount || this.tabinfo.limitRows;
 
     // Clear all button
     this.hasWhere = (this.tabinfo.wherearrcomp.length > 0);
+
   }
 
   applyWhereClause(){

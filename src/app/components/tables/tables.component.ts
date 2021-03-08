@@ -17,10 +17,10 @@ import { StorageService } from '../../services/storage.service';
 export class TablesComponent implements OnInit {
 
  @Input() tabinfo: Tab;
- 
+
  searchTerm: string;
- 
- 
+
+
   constructor(private data: DataService, private comm: CommService, private store:StorageService) { }
 
   ngOnInit() {
@@ -68,14 +68,15 @@ export class TablesComponent implements OnInit {
 
   tableClickHandler(table: Table) {
     //Make sure there was a change before sending the information
-       if(this.tabinfo.table == undefined || this.tabinfo.table.name != table.name)
+    if(this.tabinfo.table == undefined || this.tabinfo.table.name != table.name)
     {
       for (var tbl of this.tabinfo.seltbllist)
         tbl.isSelected = (tbl.name == table.name);
- 
+
       //Update tabinfo before sending
       this.tabinfo.table = table;
- 
+      this.tabinfo.tempPrimKey = null;
+
       //report the table selection
       this.comm.tableSelected.emit(this.tabinfo);
     }

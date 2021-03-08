@@ -6,8 +6,10 @@ import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
 import { Tab } from 'src/app/models/Tab.model';
 import { MatSort, MatTableDataSource, MatDialog } from '@angular/material';
 import { QueryDialogComponent } from 'src/app/dialogs/query-dialog/query-dialog.component';
-import {UpdaterDialogComponent} from '../../dialogs/updater-dialog/updater-dialog.component';
-import {PrimkeyDialogComponent} from '../../dialogs/primkey-dialog/primkey-dialog.component';
+import { UpdaterDialogComponent } from '../../dialogs/updater-dialog/updater-dialog.component';
+import { PrimkeyDialogComponent } from '../../dialogs/primkey-dialog/primkey-dialog.component';
+import { ModifierDialogComponent } from '../../dialogs/modifier-dialog/modifier-dialog.component';
+
 
 @Component({
   selector: 'app-query-result',
@@ -22,6 +24,8 @@ export class QueryResultComponent implements OnInit {
   colHeader: string[];
   dataSource: any;
   rowsReturned: string;
+  showEditCol: boolean = false;
+  selRow: any;
 
   constructor(private comm: CommService, private data: DataService, private store: StorageService, private excel: ExcelService, public dialog: MatDialog) { }
 
@@ -49,7 +53,11 @@ export class QueryResultComponent implements OnInit {
     });
 
     this.comm.copyToClipboardClicked.subscribe(() => {
+      console.log("clipboard copy subscription but nothing is coded");
+    });
 
+    this.comm.dataModifierClicked.subscribe(() => {
+      this.processDataModifyClicked();
     });
   }
 
@@ -58,6 +66,7 @@ export class QueryResultComponent implements OnInit {
     if (this.tabinfo === this.store.selectedTab){
       this.initializeTheQuery();
       this.constructSQLString();
+      this.tabinfo.limitRows = false;
     }
   }
 
@@ -98,7 +107,6 @@ export class QueryResultComponent implements OnInit {
     else if (this.tabinfo.wherearrcomp.length == 0 && this.tabinfo.colfilterarr[0] == "*" && parseInt(this.tabinfo.selectcnt) == -9){
       displayStrSQL += " all records "
     }
-    //console.log("after the top ten selector");
 
     //What columns do we want
     //  headleyt:  20210129  adding the displayStrSQL variable for the text version of the query
@@ -131,13 +139,16 @@ export class QueryResultComponent implements OnInit {
     displayStrSQL += "table " + this.tabinfo.table.name + " in the " + this.tabinfo.database + " database ";
 
     //Add Join statement
-    if(this.tabinfo.joinarr.length > 0)
+    if(this.tabinfo.joinarr.length > 0){
       strSQL += this.constructJoin();
+      displayStrSQL = this.constructJoinSentence(displayStrSQL);
+    }
 
     //Where Clause
     if(this.tabinfo.wherearrcomp.length > 0){
       strSQL += this.constructWhereClause(true);
       displayStrSQL += this.constructWhereClauseSentence();
+      console.log("after where clause, after join:  " + strSQL);
     }
 
     // Order By
@@ -184,14 +195,20 @@ export class QueryResultComponent implements OnInit {
 			  	case "ntext":
 				  case "text":
   				case "uniqueidentifier":
-          wStr += "'" + this.checkForWildcards(row.value, forDisplay) + "'";
+//  headleyt:  20210205  added a check to parse/build the proper string for the IN operator
+            {
+              if (row.operator.toUpperCase() != "IN")
+                wStr += "'" + this.checkForWildcards(row.value, forDisplay) + "'";
+              else
+                wStr += this.checkValidINString(this.checkForWildcards(row.value, forDisplay), row.type);
+            }
 		  			break;
 			  	case "float":
 				  case "bigint":
   				case "int":
 	  			case "bit":
 		  		case "decimal":
-          wStr += row.value;
+          wStr += this.checkValidINString(row.value, row.type);
 				  	break;
         }
       } else {
@@ -231,20 +248,46 @@ export class QueryResultComponent implements OnInit {
 			  	case "ntext":
 				  case "text":
   				case "uniqueidentifier":
-          wStr += "'" + this.checkForWildcards(row.value, true) + "'";
+//  headleyt:  20210205  added a check to parse/build the proper string for the IN operator
+            {
+              if (row.operator.toUpperCase() != "IN")
+                wStr += "'" + this.checkForWildcards(row.value, true) + "'";
+              else
+                wStr += this.checkValidINString(this.checkForWildcards(row.value, true), row.type);
+            }
 		  			break;
 			  	case "float":
 				  case "bigint":
   				case "int":
 	  			case "bit":
 		  		case "decimal":
-          wStr += row.value;
+          wStr += this.checkValidINString(row.value, row.type);
 				  	break;
         }
       }
     }
 
     return wStr;
+  }
+
+  //  headleyt:  20210204  Added new function to check the string entered for the IN operator
+  checkValidINString(rowValue: string, rowType: string)  {
+    let filterValueStr = "";
+    rowValue = rowValue.replace("(","").replace(")","");  //  stripping out parentheses if they are part of the statement and then adding back in
+    let arrInStr = rowValue.split(/,| /);
+    for(let i = 0; i < arrInStr.length; i++){
+      let filterValue: any =  arrInStr[i].trim();
+      if (filterValue != "") {
+        if (filterValue.indexOf("'") < 0)
+          filterValueStr += "'" + filterValue + "'";
+        else
+          filterValueStr += filterValue;
+        if (i < (arrInStr.length -1))
+          filterValueStr += ',';
+      }
+    }
+    filterValueStr = "(" + filterValueStr + ")";
+    return filterValueStr;
   }
 
   //  headleyt:  20210115  Integrated new function from Sean to check for wildcards
@@ -267,10 +310,10 @@ export class QueryResultComponent implements OnInit {
   }  */
 
    //  headleyt:  20210201  Added TitleCase converter so the column names in sentence format are all the same
-   TitleCase(str: string) {
+  TitleCase(str: string) {
     return str.toLowerCase().split('_').map(word => {
       return (word.charAt(0).toUpperCase() + word.slice(1));
-    }).join(' ');
+    }).join('');
   }
 
   constructOrderBy() {
@@ -291,6 +334,35 @@ export class QueryResultComponent implements OnInit {
 
     for (let i = 0; i < this.tabinfo.joinarr.length; i++){
       jStr += " " + this.tabinfo.joinarr[i].joinclausestr;
+    }
+    return jStr;
+  }
+
+  //  headleyt: 20210217  Added this function to build the sentence version of the join clause
+  constructJoinSentence(sentence: string) {
+    let jStr: string = "";
+    let tableString: string = "";
+
+    //console.log("sentence passed in:  " + sentence);
+    //console.log("constructJoinSentece:  " + this.tabinfo.joinarr.length);
+    for (let i = 0; i < this.tabinfo.joinarr.length; i++){
+      if (this.tabinfo.joinarr[i].dbleft == this.tabinfo.joinarr[i].dbright){
+        //console.log("looping through join rows (right table):  " + this.tabinfo.joinarr[i].tableright);
+        if (tableString.indexOf(this.tabinfo.joinarr[i].tableleft) == -1){
+          tableString += this.tabinfo.joinarr[i].tableleft;
+        }
+        if (tableString.indexOf(this.tabinfo.joinarr[i].tableright) == -1){
+          if (i < this.tabinfo.joinarr.length - 1)
+            tableString += ", " + this.tabinfo.joinarr[i].tableright;
+          else
+            tableString += ", and " + this.tabinfo.joinarr[i].tableright;
+        }
+        jStr = sentence.replace("table", "tables").replace(this.tabinfo.joinarr[i].tableleft, tableString);
+ //       jStr = sentence.replace("table", "tables").replace(this.tabinfo.joinarr[i].tableleft, (this.tabinfo.joinarr[i].tableleft + " and " + this.tabinfo.joinarr[i].tableright));
+      }
+      else if (this.tabinfo.joinarr[i].dbleft != this.tabinfo.joinarr[i].dbright){
+        jStr = sentence + " and table " + this.tabinfo.joinarr[i].tableright + " in the " + this.tabinfo.joinarr[i].dbright + " database ";
+      }
     }
 
     return jStr;
@@ -336,6 +408,10 @@ export class QueryResultComponent implements OnInit {
     this.rowsReturned = "Rows Returned: " + results.length;
   }
 
+  removeRec(row){
+
+  }
+
   exportAsXLSX(type: string):void {
     this.excel.exportAsExcelFile(this.dataSource.data, 'queryResults', type);
   }
@@ -363,9 +439,11 @@ export class QueryResultComponent implements OnInit {
     }
   }
 
-  cellClickedHandler(col, value) {
-    let cell = {col: col, value: value };
+  rowClickedHandler(row) {
+    this.tabinfo.selectedrow = row;
+  }
 
+  cellClickedHandler(col, value) {
     // Store the column that has been selected for modification
     this.tabinfo.table["selectedColumn"] = col;
     this.tabinfo.table["curvalue"] = value;
@@ -378,19 +456,32 @@ export class QueryResultComponent implements OnInit {
     if(!this.tabinfo.hasPrimKey) {
       // Doesn't have a primary key, so user must select a unique identifier to be used in the where clause
       let tabdata: any = {col: col, tabinfo: this.tabinfo };
-      const dialogPrimeKey = this.dialog.open(PrimkeyDialogComponent, { width: '350px', height: '200px', autoFocus: true, data: tabdata });
-      dialogPrimeKey.afterClosed().subscribe((id) => {
+      const dialogPrimeKey = this.dialog.open(PrimkeyDialogComponent, { width: '350px', height: '430px', autoFocus: true, data: tabdata });
+      dialogPrimeKey.afterClosed().subscribe((ids) => {
 
-        if(id != -1){
-          // Need to update our local variable with the information
-          let seltab = this.tabinfo.availcolarr.find(x => x.columnid == id);
-          if(seltab != undefined) {
-            seltab.primarykey = true;
+        // Store the potentially multiple IDs in a variable
+        this.tabinfo.tempPrimKey = ids;
+
+        // Account for all of the primary keys
+        if(this.tabinfo.tempPrimKey != null) {
+          if (this.tabinfo.tempPrimKey.length > 0) {
+            // Need to update our local variable with the information
+            for (let c = 0; c < ids.length; c++) {
+              let selCol = this.tabinfo.availcolarr.find(x => x.columnid == ids[c]);
+              if (selCol != undefined) selCol.primarykey = true;
+            }
+
+            // All done with identifying the primary keys, so move forward with the process
             this.tabinfo.hasPrimKey = true;
             this.processCellClicked(obj);
+          } else {
+            this.tabinfo.tempPrimKey = null;
+            alert("Unable to modify the selected value without a primary key. Operation canceled");
           }
-        } else
+        } else {
+          this.tabinfo.tempPrimKey = null;
           alert("Unable to modify the selected value without a primary key. Operation canceled");
+        }
       });
     } else
         this.processCellClicked(obj);
@@ -398,32 +489,48 @@ export class QueryResultComponent implements OnInit {
 
   processCellClicked(obj){
     if(!obj.primarykey) {
-      this.tabinfo.table["valueLimiter"] = this.generateLimiter(this.tabinfo.table["selectedColumn"]);
-
-      const dialogProcessChg = this.dialog.open(UpdaterDialogComponent, { width: '385px', height: '300px', autoFocus: true, data: this.tabinfo });
+      const dialogProcessChg = this.dialog.open(UpdaterDialogComponent, { width: '385px', height: '300px', autoFocus: true, data: {tabinfo: this.tabinfo, datasource: this.dataSource.filteredData}});
       dialogProcessChg.afterClosed()
         .subscribe((rtn) => {
         if (rtn.table["setvalue"] != undefined){
           //Value has been set to something new, so let's save it (//this.comm.runQueryChange.emit();)
-          //console.log(this.tabinfo, rtn);
           let selcol = this.tabinfo.availcolarr.find(x => x.columnname == this.tabinfo.table["selectedColumn"]);
-          let updatekey = "SET [" + selcol.columnname + "] = " + this.store.determineValueType(this.tabinfo.table["setvalue"], selcol.vartype) + " WHERE " + this.tabinfo.table["valueLimiter"];
+          let updatekey = "SET [" + selcol.columnname + "] = " + this.store.determineValueType(this.tabinfo.table["setvalue"], selcol.vartype);
+
+          // Generate the full where clause especially if there is more than one column used for the unique key
+          let wheredata = " WHERE ";
+          if(this.tabinfo.hasPrimKey) {  // If using permanent primary keys
+            wheredata += this.generateLimiter(this.tabinfo.availcolarr.find(x => x.primarykey == true));
+          } else if(!this.tabinfo.hasPrimKey && this.tabinfo.tempPrimKey != null) { // If using temporary primary keys
+            for (let c = 0; c < this.tabinfo.tempPrimKey.length; c++) {
+              if (c > 0) wheredata += " AND ";
+              wheredata += this.generateLimiter(this.tabinfo.availcolarr.find(x => x.columnid == this.tabinfo.tempPrimKey[c]));
+            }
+          } else alert("Missing Primary Key.  Unable to update value");
 
           // Signal the DB to update the information
-          this.data.updateRowInfo(this.tabinfo.server.replace('{0}', this.tabinfo.database), this.tabinfo.database, this.tabinfo.table["name"], updatekey, this.tabinfo.wherearr.length > 0 ? this.tabinfo.wherearr.join(' and ') : "0")
+          this.data.updateRowInfo(this.tabinfo.server.replace('{0}', this.tabinfo.database), this.tabinfo.database, this.tabinfo.table["name"], updatekey + wheredata, this.tabinfo.wherearr.length > 0 ? this.tabinfo.wherearr.join(' and ') : "0")
             .subscribe((result) => {
-            this.comm.runQueryChange.emit();
-            alert("Record updated.");
-          });
+              this.comm.runQueryChange.emit();
+              alert("Record updated.");
+            });
         }
       });
     }else
       alert("This column is a primary key and cannot be changed.");
   }
 
-  generateLimiter(selectedcol) {
+  generateLimiter(primecol) {
     // Based on the selected column, come up with the where clause to include the primary key value
-    let primecol = this.tabinfo.availcolarr.find(x => x.primarykey == true);
-    return primecol.columnname + " = " + this.store.determineValueType(this.dataSource.filteredData.find(x => x[selectedcol] == this.tabinfo.table["curvalue"])[primecol.columnname], primecol.vartype);
+    return primecol.columnname + " = " + this.store.determineValueType(this.tabinfo.selectedrow[primecol.columnname], primecol.vartype);
+  }
+
+  processDataModifyClicked() {
+    // Open the respective dialog to allow for the addition or remove of data from the currently selected table
+    const dialogModifier = this.dialog.open(ModifierDialogComponent, { width: '385px', height: '300px', autoFocus: true, data: {tabinfo: this.tabinfo}});
+    dialogModifier.afterClosed()
+      .subscribe((rtn) => {
+
+      });
   }
 }

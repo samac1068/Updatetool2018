@@ -41,7 +41,8 @@
           <mat-form-field>
             <mat-label>Left Table/Col:</mat-label>
             <mat-select [(ngModel)]="tleftcolumn">
-              <mat-option>None</mat-option>
+<!--  headleyt:  20210218  Removed None as an option as it throws an error if selected-->              
+<!--              <mat-option>None</mat-option>  -->
               <mat-option *ngFor="let col of tleftcolarr" [value]="col.columnname">{{ col.columnname }}</mat-option>
             </mat-select>
           </mat-form-field>
@@ -98,7 +99,8 @@
           <mat-form-field>
             <mat-label>Right Table/Col:</mat-label>
             <mat-select [(ngModel)]="trightcolumn">
-              <mat-option>None</mat-option>
+<!--  headleyt:  20210218  Removed None as an option as it throws an error if selected-->              
+<!--              <mat-option>None</mat-option>-->
               <mat-option *ngFor="let col of trightcolarr" [value]="col.columnname">{{ col.columnname }}</mat-option>
             </mat-select>
           </mat-form-field>

@@ -1,22 +1,24 @@
 <div id="divBtnGrp">
+
   <div class="btnGroup">
-    <button class="standardBtn" id="btnColumns" (click)="openColumnWindow()" ngbTooltip="Select Custom Columns" placement="bottom">Customize Columns</button>
-    <button class="standardBtn" id="btnOrder" (click)="openOrderByWindow()" ngbTooltip="Add/Edit Order By Statement" placement="bottom">Order By</button>
+    <button class="standardBtn" id="btnColumns" [disabled]="tabinfo.table == undefined || tabinfo.table == null" (click)="openColumnWindow()" ngbTooltip="Select Custom Columns" placement="bottom">Customize Columns</button>
+    <button class="standardBtn" id="btnOrder" [disabled]="tabinfo.table == undefined || tabinfo.table == null" (click)="openOrderByWindow()" ngbTooltip="Add/Edit Order By Statement" placement="bottom">Order By</button>
   </div>
+
   <div class="btnGroup">
-    <button class="standardBtn" id="btnJoins" (click)="openJoinWindow()" ngbTooltip="Add/Edit Join Statement" placement="bottom">Joins</button>
-    <button id="btnCSV" class="standardBtn" (click)="exportToExcelHandler('csv')" ngbTooltip="Export results to CSV" placement="bottom"><i class="fa fa-file-text-o"></i> CSV</button>
+    <button class="standardBtn" id="btnJoins" [disabled]="tabinfo.table == undefined || tabinfo.table == null" (click)="openJoinWindow()" ngbTooltip="Add/Edit Join Statement" placement="bottom">Joins</button>
+    <button id="btnCSV" class="standardBtn" [disabled]="tabinfo.table == undefined || tabinfo.table == null" (click)="exportToExcelHandler('csv')" ngbTooltip="Export results to CSV" placement="bottom"><i class="fa fa-file-text-o"></i> CSV</button>
   </div>
+
   <div class="btnGroup">
-    <!--  headleyt:  20210129  Commented out until we can add back in  -->
-<!--    <button class="standardBtn" id="btnViewer" (click)="openViewerWindow()" ngbTooltip="View existing Stored Procs, Views, and Function" placement="bottom">Proc/View/Func Viewer</button>  -->
-    <button id="btnExcel" class="standardBtn" (click)="exportToExcelHandler('excel')" ngbTooltip="Export results to XLSX" placement="bottom"><i class="fa fa-file-excel-o"></i> Excel</button>
-<!--  headleyt:  20210129  Moved the clipboard button up until we can put the viewer button back-->    
-    <button class="standardBtn" id="btnClipboard" (click)="copyToClipboard()" ngbTooltip="Copy results to clipboard" placement="bottom"><i class="fa fa-clipboard"></i> Clipboard</button>
+    <button id="btnExcel" class="standardBtn" [disabled]="tabinfo.table == undefined || tabinfo.table == null" (click)="exportToExcelHandler('excel')" ngbTooltip="Export results to XLSX" placement="bottom"><i class="fa fa-file-excel-o"></i> Excel</button>
+    <button class="standardBtn" id="btnClipboard" [disabled]="tabinfo.table == undefined || tabinfo.table == null" (click)="copyToClipboard()" ngbTooltip="Copy results to clipboard" placement="bottom"><i class="fa fa-clipboard"></i> Clipboard</button>
   </div>
+
   <div class="btnGroup">
-    <button class="standardBtn" id="btnPrimaryKey" disabled="true">Set/Cgh Primary Key</button>
-<!--    <button class="standardBtn" id="btnClipboard" (click)="copyToClipboard()" ngbTooltip="Copy results to clipboard" placement="bottom"><i class="fa fa-clipboard"></i> Clipboard</button>  -->
+    <button class="standardBtn" id="btnPrimaryKey" [disabled]="tabinfo.tempPrimKey == null" (click)="openTempPrimaryKey()">Chg Primary Key</button>
+    <!--<button class="standardBtn" id="btnViewer" (click)="openViewerWindow()" ngbTooltip="View existing Stored Procs, Views, and Function" placement="bottom">Proc/View/Func Viewer</button>-->
   </div>
+
+  <hr />
 </div>
-<hr />

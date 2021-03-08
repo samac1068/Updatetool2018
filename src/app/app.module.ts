@@ -54,6 +54,7 @@ import { WhatsnewDialogComponent } from './dialogs/whatsnew-dialog/whatsnew-dial
 import { CopyTextDirective } from './services/copy-text.directive';
 import { UpdaterDialogComponent } from './dialogs/updater-dialog/updater-dialog.component';
 import { PrimkeyDialogComponent } from './dialogs/primkey-dialog/primkey-dialog.component';
+import { ModifierDialogComponent } from './dialogs/modifier-dialog/modifier-dialog.component';
 
 
 @NgModule({
@@ -81,7 +82,8 @@ import { PrimkeyDialogComponent } from './dialogs/primkey-dialog/primkey-dialog.
     WhatsnewDialogComponent,
     CopyTextDirective,
     UpdaterDialogComponent,
-    PrimkeyDialogComponent
+    PrimkeyDialogComponent,
+    ModifierDialogComponent
   ],
   imports: [
     BrowserModule,
